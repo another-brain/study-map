@@ -1,45 +1,33 @@
 {
   "name": "study-map",
-  "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@emotion/cache": "^11.14.0",
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@fontsource/roboto": "^5.2.5",
-    "@mui/icons-material": "^7.1.1",
-    "@mui/material": "^7.1.1",
-    "@mui/material-nextjs": "^7.1.1",
-    "@tanstack/react-query": "^5.80.6",
-    "@tidbcloud/serverless": "^0.2.0",
+    "@nuxt/eslint": "^1.8.0",
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "@pinia/nuxt": "^0.11.2",
+    "@vite-pwa/nuxt": "^1.0.4",
     "clsx": "^2.1.1",
-    "dotenv": "^16.5.0",
-    "drizzle-orm": "^0.44.2",
-    "framer-motion": "^12.16.0",
-    "jotai": "^2.12.5",
-    "jotai-tanstack-query": "^0.9.0",
-    "next": "15.3.1",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "dotenv": "^17.2.1",
+    "drizzle-orm": "^0.44.4",
+    "eslint": "^9.33.0",
+    "mysql2": "^3.14.3",
+    "nuxt": "^4.0.3",
+    "pinia": "^3.0.3",
+    "vue": "^3.5.18",
+    "vue-router": "^4.5.1",
+    "vuetify-nuxt-module": "^0.18.7"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@tanstack/eslint-plugin-query": "^5.78.0",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "drizzle-kit": "^0.31.1",
-    "eslint": "^9",
-    "eslint-config-next": "15.3.1",
-    "tailwindcss": "^4",
-    "tsx": "^4.19.4",
-    "typescript": "^5"
+    "drizzle-kit": "^0.31.4",
+    "tsx": "^4.20.4",
+    "vue-tsc": "^3.0.5"
   }
 }
