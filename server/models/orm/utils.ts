@@ -4,16 +4,16 @@ const id = bigint({ mode: 'bigint', unsigned: true }).primaryKey().autoincrement
 const name = varchar({ length: 100 }).notNull().unique();
 const url = varchar({ length: 500 }).notNull().unique();
 const description = text().notNull().default('');
+function refId(col: MySqlColumn) {
+    return bigint({ mode: 'bigint', unsigned: true })
+        .notNull()
+        .references(() => col);
+}
 
 export const fields = {
     id,
     name,
     url,
-    description
+    description,
+    refId
 };
-
-export function refId(col: MySqlColumn) {
-    return bigint({ mode: 'bigint', unsigned: true })
-        .notNull()
-        .references(() => col);
-}

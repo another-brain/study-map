@@ -1,5 +1,5 @@
 import { drizzle } from 'drizzle-orm/mysql2';
-import * as schema from '../models/resource_management';
+import * as schema from '../models/orm/resource_management';
 import { createConnection } from 'mysql2';
 
 const connection = createConnection({
