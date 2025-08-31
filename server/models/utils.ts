@@ -1,0 +1,19 @@
+import { bigint, type MySqlColumn, text, varchar } from 'drizzle-orm/mysql-core';
+
+const id = bigint({ mode: 'bigint', unsigned: true }).primaryKey().autoincrement();
+const name = varchar({ length: 100 }).notNull().unique();
+const url = varchar({ length: 500 }).notNull().unique();
+const description = text().notNull().default('');
+
+export const fields = {
+    id,
+    name,
+    url,
+    description
+};
+
+export function refId(col: MySqlColumn) {
+    return bigint({ mode: 'bigint', unsigned: true })
+        .notNull()
+        .references(() => col);
+}
