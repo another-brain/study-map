@@ -5,14 +5,14 @@ import { buildErrorResponse } from '~~/server/utils/api';
 
 export default defineEventHandler(async event => {
     const body = await readBody(event);
-    const validate = sourceSchema.safeParse(body);
-    if (!validate.success) {
-        throw buildErrorResponse(StatusCodes.BAD_REQUEST, validate.error);
+    const { success, data, error } = sourceSchema.safeParse(body);
+    if (!success) {
+        throw buildErrorResponse(StatusCodes.BAD_REQUEST, error);
     }
     try {
         const db = useDB();
         const [id] = await db.transaction(async tx => {
-            const { name, description, urls } = validate.data;
+            const { name, description, urls } = data;
             const result = await tx.insert(source).values({ name, description });
             const sourceId = result[0].insertId;
             const addresses = urls.map(url => ({ url, sourceId }));

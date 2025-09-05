@@ -1,24 +1,19 @@
 import { eq } from 'drizzle-orm';
 import { StatusCodes } from 'http-status-codes';
-import { idSchema } from '~~/server/models/api/common';
-import { resourceSchema } from '~~/server/models/api/resource_management';
+import { resourceSchemaWithId } from '~~/server/models/api/resource_management';
 import { resource } from '~~/server/models/orm/resource_management';
 import { buildErrorResponse } from '~~/server/utils/api';
 
 export default defineEventHandler(async event => {
     const id = getRouterParam(event, 'id')!;
-    const validateId = idSchema.safeParse(id);
-    if (!validateId.success) {
-        throw buildErrorResponse(StatusCodes.BAD_REQUEST, validateId.error);
-    }
     const body = await readBody(event);
-    const validateBody = resourceSchema.safeParse(body);
-    if (!validateBody.success) {
-        throw buildErrorResponse(StatusCodes.BAD_REQUEST, validateBody.error);
+    const { success, data, error } = resourceSchemaWithId.safeParse({ id, ...body });
+    if (!success) {
+        throw buildErrorResponse(StatusCodes.BAD_REQUEST, error);
     }
     try {
         const db = useDB();
-        await db.update(resource).set(validateBody.data).where(eq(resource.id, validateId.data));
+        await db.update(resource).set(data).where(eq(resource.id, data.id));
         setResponseStatus(event, StatusCodes.NO_CONTENT);
         return null;
     } catch (err) {

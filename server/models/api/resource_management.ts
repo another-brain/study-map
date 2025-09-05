@@ -1,5 +1,6 @@
 import z from 'zod';
 import { fields } from './utils';
+import { idSchema } from './common';
 const { name, url, description } = fields;
 
 export const resourceSchema = z.object({
@@ -10,8 +11,24 @@ export const resourceSchema = z.object({
     description
 });
 
+export type ResourceSchema = z.infer<typeof resourceSchema>;
+
+export const resourceSchemaWithId = resourceSchema.extend({
+    id: idSchema
+});
+
+export type ResourceSchemaWithId = z.infer<typeof resourceSchemaWithId>;
+
 export const sourceSchema = z.object({
     name,
     description,
     urls: z.array(url)
 });
+
+export type SourceSchema = z.infer<typeof sourceSchema>;
+
+export const sourceSchemaWithId = sourceSchema.extend({
+    id: idSchema
+});
+
+export type SourceSchemaWithId = z.infer<typeof sourceSchemaWithId>;

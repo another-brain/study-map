@@ -1,32 +1,26 @@
 import { eq, inArray } from 'drizzle-orm';
 import { StatusCodes } from 'http-status-codes';
-import { idSchema } from '~~/server/models/api/common';
-import { sourceSchema } from '~~/server/models/api/resource_management';
+import { sourceSchemaWithId } from '~~/server/models/api/resource_management';
 import { address, source } from '~~/server/models/orm/resource_management';
 import { buildErrorResponse } from '~~/server/utils/api';
 
 export default defineEventHandler(async event => {
     const id = getRouterParam(event, 'id');
-    const validateId = idSchema.safeParse(id);
-    if (!validateId.success) {
-        throw buildErrorResponse(StatusCodes.BAD_REQUEST, validateId.error);
-    }
     const body = await readBody(event);
-    const validateBody = sourceSchema.safeParse(body);
-    if (!validateBody.success) {
-        throw buildErrorResponse(StatusCodes.BAD_REQUEST, validateBody.error);
+    const { success, data, error } = sourceSchemaWithId.safeParse({ id, ...body });
+    if (!success) {
+        throw buildErrorResponse(StatusCodes.BAD_REQUEST, error);
     }
     try {
         const db = useDB();
         await db.transaction(async tx => {
-            const sourceId = validateId.data;
-            const { name, description } = validateBody.data;
-            await tx.update(source).set({ name, description }).where(eq(source.id, sourceId));
+            const sourceId = data.id;
+            await tx.update(source).set(data).where(eq(source.id, sourceId));
             const oldAddresses = await tx.query.address.findMany({
                 where: (address, { eq }) => eq(address.sourceId, sourceId)
             });
             const oldUrls = new Set(oldAddresses.map(address => address.url));
-            const newUrls = new Set(validateBody.data.urls);
+            const newUrls = new Set(data.urls);
             const addressesToInsert = Array.from(newUrls.difference(oldUrls)).map(url => ({
                 url,
                 sourceId

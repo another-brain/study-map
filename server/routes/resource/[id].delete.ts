@@ -6,13 +6,13 @@ import { buildErrorResponse } from '~~/server/utils/api';
 
 export default defineEventHandler(async event => {
     const id = getRouterParam(event, 'id')!;
-    const validate = idSchema.safeParse(id);
-    if (!validate.success) {
-        throw buildErrorResponse(StatusCodes.BAD_REQUEST, validate.error);
+    const { success, data, error } = idSchema.safeParse(id);
+    if (!success) {
+        throw buildErrorResponse(StatusCodes.BAD_REQUEST, error);
     }
     try {
         const db = useDB();
-        await db.delete(resource).where(eq(resource.id, validate.data));
+        await db.delete(resource).where(eq(resource.id, data));
         setResponseStatus(event, StatusCodes.NO_CONTENT);
         return null;
     } catch (err) {

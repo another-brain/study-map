@@ -5,13 +5,13 @@ import { buildErrorResponse } from '~~/server/utils/api';
 
 export default defineEventHandler(async event => {
     const body = await readBody(event);
-    const validate = resourceSchema.safeParse(body);
-    if (!validate.success) {
-        throw buildErrorResponse(StatusCodes.BAD_REQUEST, validate.error);
+    const { success, data, error } = resourceSchema.safeParse(body);
+    if (!success) {
+        throw buildErrorResponse(StatusCodes.BAD_REQUEST, error);
     }
     try {
         const db = useDB();
-        const result = await db.insert(resource).values(validate.data);
+        const result = await db.insert(resource).values(data);
         setResponseStatus(event, StatusCodes.CREATED);
         return {
             id: result[0].insertId

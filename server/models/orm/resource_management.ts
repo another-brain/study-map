@@ -10,7 +10,9 @@ export const resource = mysqlTable(
         id,
         name: varchar({ length: 100 }).notNull(),
         url,
-        source: varchar({ length: 500 }).references(() => address.url),
+        source: varchar({ length: 500 })
+            .notNull()
+            .references(() => address.url),
         score: tinyint().notNull(),
         description
     },

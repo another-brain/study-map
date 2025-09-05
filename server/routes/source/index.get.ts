@@ -1,17 +1,18 @@
 import { StatusCodes } from 'http-status-codes';
 import { paginationSchema } from '~~/server/models/api/common';
+import type { SourceSchemaWithId } from '~~/server/models/api/resource_management';
 import { source } from '~~/server/models/orm/resource_management';
 import { buildErrorResponse, buildQueryResponse } from '~~/server/utils/api';
 
 export default defineEventHandler(async event => {
     const query = getQuery(event);
-    const validate = paginationSchema.safeParse(query);
-    if (!validate.success) {
-        throw buildErrorResponse(StatusCodes.BAD_REQUEST, validate.error);
+    const { success, data, error } = paginationSchema.safeParse(query);
+    if (!success) {
+        throw buildErrorResponse(StatusCodes.BAD_REQUEST, error);
     }
     try {
         const db = useDB();
-        const { page, size } = validate.data;
+        const { page, size } = data;
         const { count, result } = await db.transaction(async tx => {
             const count = await tx.$count(source);
             const result = await tx.query.source.findMany({
@@ -24,7 +25,7 @@ export default defineEventHandler(async event => {
             return { count, result };
         });
         setResponseStatus(event, StatusCodes.OK);
-        return buildQueryResponse(
+        return buildQueryResponse<SourceSchemaWithId & { description: string }>(
             result.map(item => {
                 const { id, name, description, addresses } = item;
                 return {
