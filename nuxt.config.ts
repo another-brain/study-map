@@ -16,5 +16,8 @@ export default defineNuxtConfig({
         '@pinia/nuxt',
         'vuetify-nuxt-module',
         '@vite-pwa/nuxt'
-    ]
+    ],
+    imports: {
+        dirs: ['composables/**']
+    }
 });
