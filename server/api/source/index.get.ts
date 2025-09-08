@@ -3,6 +3,7 @@ import { paginationSchema } from '~~/server/models/api/common';
 import type { SourceSchemaWithId } from '~~/server/models/api/resource_management';
 import { source } from '~~/server/models/orm/resource_management';
 import { buildErrorResponse, buildQueryResponse } from '~~/server/utils/api';
+import { pager } from '~~/server/utils/db';
 
 export default defineEventHandler(async event => {
     const query = getQuery(event);
@@ -15,9 +16,10 @@ export default defineEventHandler(async event => {
         const { page, size } = data;
         const { count, result } = await db.transaction(async tx => {
             const count = await tx.$count(source);
+            const { limit, offset } = pager(page, size, count);
             const result = await tx.query.source.findMany({
-                limit: size > 0 ? size : count,
-                offset: (page - 1) * size,
+                limit,
+                offset,
                 with: {
                     addresses: true
                 }

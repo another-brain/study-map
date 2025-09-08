@@ -15,3 +15,10 @@ const client = drizzle(connection, { schema, mode: 'default' });
 export function useDB() {
     return client;
 }
+
+export function pager(page: number, size: number, count: number) {
+    return {
+        limit: size > 0 ? size : count,
+        offset: (page - 1) * size
+    };
+}
