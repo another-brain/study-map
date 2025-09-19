@@ -10,7 +10,7 @@
     "endOfLine": "lf",
     "overrides": [
         {
-            "files": "*.tsx",
+            "files": "*.vue",
             "options": {
                 "tabWidth": 2
             }
