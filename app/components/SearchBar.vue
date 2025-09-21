@@ -24,7 +24,7 @@
             </template>
             <template #append-item>
               <div v-intersect="more">
-                <v-progress-circular v-show="loadingItems" indeterminate color="primary" />
+                <v-progress-linear v-show="loadingItems" indeterminate color="primary" />
               </div>
             </template>
           </v-autocomplete>
