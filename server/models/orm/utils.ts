@@ -17,3 +17,7 @@ export const fields = {
     description,
     refId
 };
+
+export function likeStr(keyword: string) {
+    return `%${keyword}%`;
+}

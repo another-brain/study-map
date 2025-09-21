@@ -17,7 +17,11 @@ export const resourceSchemaWithId = resourceSchema.extend({
     id: idSchema
 });
 
-export type ResourceSchemaWithId = z.infer<typeof resourceSchemaWithId>;
+export type ResourceFullSchema = Required<z.infer<typeof resourceSchemaWithId>>;
+
+export type ResourceQueryResp = ResourceFullSchema extends infer T
+    ? { [K in keyof T]: K extends 'id' ? T[K] : T[K] | undefined }
+    : never;
 
 export const sourceSchema = z.object({
     name,

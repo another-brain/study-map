@@ -1,4 +1,5 @@
 import type { StatusCodes } from 'http-status-codes';
+import type { SearchResponse } from '~~/shared/types/query';
 
 export function buildErrorResponse(statusCode: StatusCodes, error: Error): Error {
     return createError({
@@ -8,9 +9,9 @@ export function buildErrorResponse(statusCode: StatusCodes, error: Error): Error
     });
 }
 
-export function buildQueryResponse<T>(entries: T[], total: number) {
+export function buildQueryResponse<T>(data: T[], total: number): SearchResponse<T> {
     return {
         total,
-        entries
+        data
     };
 }

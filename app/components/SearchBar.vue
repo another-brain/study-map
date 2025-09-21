@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row>
       <v-col cols="auto" class="px-3">
         <v-switch v-model="modeSwitch" color="primary">
@@ -21,6 +21,11 @@
           >
             <template #loader>
               <v-progress-linear color="primary" :indeterminate="loading" />
+            </template>
+            <template #append-item>
+              <div v-intersect="more">
+                <v-progress-circular v-show="loadingItems" indeterminate color="primary" />
+              </div>
             </template>
           </v-autocomplete>
           <v-text-field
@@ -66,18 +71,14 @@ const icon = computed(() => modeIcons[mode.value]);
 
 const text = ref('');
 defineExpose({ text: readonly(text) });
-const { load, send } = defineProps<{
-  load: (text: string) => string[];
-  send: () => void;
+const { loading, items, loadingItems } = defineProps<{
+  loading: boolean;
+  loadingItems: boolean;
+  items: string[];
 }>();
-const loading = ref(false);
-const items = computed(() => load(text.value));
-
-function submit() {
-  loading.value = true;
-  send();
-  loading.value = false;
-}
+const emit = defineEmits(['submit', 'more']);
+const submit = () => emit('submit');
+const more = () => emit('more');
 </script>
 
 <style></style>
