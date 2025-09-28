@@ -1,5 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { StatusCodes } from 'http-status-codes';
+import { TableName } from '~~/server/consts/db';
 import { idSchema } from '~~/server/models/api/common';
 import { resource } from '~~/server/models/orm/resource_management';
 import { buildErrorResponse } from '~~/server/utils/api';
@@ -13,6 +14,8 @@ export default defineEventHandler(async event => {
     try {
         const db = useDB();
         await db.delete(resource).where(eq(resource.id, data));
+        const index = useIndex(TableName.Resource);
+        index.remove(data);
         setResponseStatus(event, StatusCodes.NO_CONTENT);
         return null;
     } catch (err) {

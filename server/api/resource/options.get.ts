@@ -12,18 +12,13 @@ export default defineEventHandler(async event => {
         const { keyword, page, size } = data;
         const index = useIndex(TableName.Resource);
         const ids = (await index.search(keyword, true)).map(id => Number(id));
-        const db = useDB();
-        const records = await db.query.resource.findMany({
-            where: (resource, { inArray }) => inArray(resource.id, ids),
-            columns: { name: true }
-        });
-        const { limit, offset } = pager(page, size, records.length);
-        const result = records
+        const { limit, offset } = pager(page, size, ids.length);
+        const result = ids
             .slice(offset)
             .slice(0, limit)
-            .map(({ name }) => name);
+            .map(id => index.getName(id)!);
         setResponseStatus(event, StatusCodes.OK);
-        return buildQueryResponse(result, records.length);
+        return buildQueryResponse(result, ids.length);
     } catch (err) {
         throw buildErrorResponse(StatusCodes.INTERNAL_SERVER_ERROR, err as Error);
     }

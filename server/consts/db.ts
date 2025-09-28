@@ -1,4 +1,4 @@
-export const enum TableName {
+export enum TableName {
     Resource = 'resource',
     Source = 'source',
     Address = 'address',
