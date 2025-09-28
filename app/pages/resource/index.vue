@@ -63,7 +63,7 @@ const {
   page: itemsPage,
   isLastPage: isLastPageOfItems,
   fetching: fetchingItems
-} = useListResource(keyword, ['id', 'name'], 10, true);
+} = useListResource(keyword, ['id', 'name'], 10);
 const items = computed(() => itemsData.value.map(item => item.name!));
 function fetchNextPageItems(isIntersecting: boolean) {
   if (

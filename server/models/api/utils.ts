@@ -9,3 +9,5 @@ export const fields = {
     url,
     description
 };
+
+export const keyword = z.string().optional();

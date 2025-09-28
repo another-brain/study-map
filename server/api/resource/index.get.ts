@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
-import { searchSchema } from '~~/server/models/api/common';
+import { querySchema } from '~~/server/models/api/common';
 import type { ResourceQueryResp } from '~~/server/models/api/resource_management';
 import { resource } from '~~/server/models/orm/resource_management';
 import { likeStr } from '~~/server/models/orm/utils';
@@ -9,7 +9,7 @@ import { mergeObj } from '~~/shared/utils';
 
 export default defineEventHandler(async event => {
     const query = getQuery(event);
-    const { success, data, error } = searchSchema.safeParse(query);
+    const { success, data, error } = querySchema.safeParse(query);
     if (!success) {
         throw buildErrorResponse(StatusCodes.BAD_REQUEST, error);
     }
