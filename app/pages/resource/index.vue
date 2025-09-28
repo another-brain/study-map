@@ -27,11 +27,11 @@
 <script lang="ts" setup>
 const input = ref<{ text: string }>();
 const keyword = computed(() => input.value?.text ?? '');
-const { loading, data, error, isLastPage, page, refresh, fetching } = useListResource(
-  keyword,
-  ['id', 'name', 'description'],
-  20
-);
+const { loading, data, error, isLastPage, page, refresh, fetching } = useListResource(keyword, 20, [
+  'id',
+  'name',
+  'description'
+]);
 
 type InfiniteScrollStatus = 'ok' | 'empty' | 'loading' | 'error';
 function fetchNextPage({ done }: { done: (status: InfiniteScrollStatus) => void }) {
@@ -58,13 +58,13 @@ function fetchNextPage({ done }: { done: (status: InfiniteScrollStatus) => void 
 
 const {
   loading: loadingItems,
-  data: itemsData,
+  data: items,
   error: itemsError,
   page: itemsPage,
   isLastPage: isLastPageOfItems,
   fetching: fetchingItems
-} = useListResource(keyword, ['id', 'name'], 10);
-const items = computed(() => itemsData.value.map(item => item.name!));
+} = useSearchResource(keyword, 10);
+
 function fetchNextPageItems(isIntersecting: boolean) {
   if (
     isIntersecting &&

@@ -5,8 +5,8 @@ import type { SearchResponse } from '~~/shared/types/query';
 
 export const useListResource = (
     keyword: Ref<string | undefined>,
-    fields?: string[],
-    pageSize?: number
+    initialPageSize: number,
+    fields?: string[]
 ) => {
     return usePagination(
         (page, size) =>
@@ -23,9 +23,9 @@ export const useListResource = (
             },
             data: resp => (resp as SearchResponse<ResourceQueryResp>).data,
             initialPage: 1,
-            initialPageSize: pageSize ?? 10,
+            initialPageSize,
             append: true,
-            debounce: 500
+            debounce: 1000
         }
     );
 };
