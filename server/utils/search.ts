@@ -1,11 +1,13 @@
 import { type DefaultSearchResults, Index } from 'flexsearch';
-import { cutForSearch } from 'nodejieba';
-import { WordTokenizer } from 'natural';
+import jieba from 'nodejieba';
+import { WordTokenizer } from 'natural/lib/natural/tokenizers';
 import { TableName } from '../consts/db';
 
-const { tokenize } = new WordTokenizer();
+const tokenizer = new WordTokenizer();
 function cutWords(contents: string[]) {
-    return contents.flatMap(content => tokenize(content).concat(cutForSearch(content)));
+    return contents.flatMap(content =>
+        tokenizer.tokenize(content).concat(jieba.cutForSearch(content))
+    );
 }
 
 class SearchIndex {
