@@ -2,6 +2,7 @@ import { type DefaultSearchResults, Index } from 'flexsearch';
 import jieba from 'nodejieba';
 import { WordTokenizer } from 'natural/lib/natural/tokenizers';
 import { TableName } from '../consts/db';
+import { consola } from 'consola';
 
 const tokenizer = new WordTokenizer();
 function cutWords(contents: string[]) {
@@ -27,10 +28,10 @@ class SearchIndex {
             .addAsync(id, cutWords(contents).join(' '))
             .then(() => {
                 this.titles.set(id, title);
-                console.log(`add ${this.key} index ${id} succeeded`);
+                consola.info(`add ${this.key} index ${id} succeeded`);
             })
             .catch(err => {
-                console.log(`add ${this.key} index ${id} failed: ${err}`);
+                consola.error(`add ${this.key} index ${id} failed: ${err}`);
             });
     }
     public async remove(id: number) {
@@ -38,10 +39,10 @@ class SearchIndex {
             .removeAsync(id)
             .then(() => {
                 this.titles.delete(id);
-                console.log(`remove ${this.key} index ${id} succeeded`);
+                consola.info(`remove ${this.key} index ${id} succeeded`);
             })
             .catch(err => {
-                console.log(`remove ${this.key} index ${id} failed: ${err}`);
+                consola.error(`remove ${this.key} index ${id} failed: ${err}`);
             });
     }
     public async update(id: number, title: string, contents: string[]) {
@@ -49,10 +50,10 @@ class SearchIndex {
             .updateAsync(id, cutWords(contents).join(''))
             .then(() => {
                 this.titles.set(id, title);
-                console.log(`update ${this.key} index ${id} succeeded`);
+                consola.info(`update ${this.key} index ${id} succeeded`);
             })
             .catch(err => {
-                console.log(`update ${this.key} index ${id} failed: ${err}`);
+                consola.error(`update ${this.key} index ${id} failed: ${err}`);
             });
     }
     public async search(keyword?: string, suggest?: boolean) {
@@ -61,9 +62,9 @@ class SearchIndex {
             return [];
         }
         const source = [keyword];
-        const querys = source.concat(cutWords(source));
+        const queries = source.concat(cutWords(source));
         const tasks = new Array<Promise<DefaultSearchResults>>();
-        for (const query of querys) {
+        for (const query of queries) {
             tasks.push(
                 this.index.searchAsync({
                     query,
