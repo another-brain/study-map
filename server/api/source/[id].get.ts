@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import { idSchema } from '~~/server/models/api/common';
-import type { SourceSchemaWithId } from '~~/server/models/api/resource_management';
+import type { SourceFullSchema } from '~~/server/models/api/resource_management';
 import { buildErrorResponse } from '~~/server/utils/api';
 
 export default defineEventHandler(async event => {
@@ -21,7 +21,7 @@ export default defineEventHandler(async event => {
             throw buildErrorResponse(StatusCodes.NOT_FOUND, new Error(`source ${id} not exist!`));
         }
         setResponseStatus(event, StatusCodes.OK);
-        const resp: SourceSchemaWithId & { description: string } = {
+        const resp: SourceFullSchema & { description: string } = {
             id: result.id,
             name: result.name,
             description: result.description,

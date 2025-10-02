@@ -35,4 +35,8 @@ export const sourceSchemaWithId = sourceSchema.extend({
     id: idSchema
 });
 
-export type SourceSchemaWithId = z.infer<typeof sourceSchemaWithId>;
+export type SourceFullSchema = Required<z.infer<typeof sourceSchemaWithId>>;
+
+export type SourceQueryResp = SourceFullSchema extends infer T
+    ? { [K in keyof T]: K extends 'id' ? T[K] : T[K] | undefined }
+    : never;

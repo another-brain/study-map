@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import { paginationSchema } from '~~/server/models/api/common';
-import type { SourceSchemaWithId } from '~~/server/models/api/resource_management';
+import type { SourceFullSchema } from '~~/server/models/api/resource_management';
 import { source } from '~~/server/models/orm/resource_management';
 import { buildErrorResponse, buildQueryResponse } from '~~/server/utils/api';
 import { pager } from '~~/server/utils/db';
@@ -27,7 +27,7 @@ export default defineEventHandler(async event => {
             return { count, result };
         });
         setResponseStatus(event, StatusCodes.OK);
-        return buildQueryResponse<SourceSchemaWithId & { description: string }>(
+        return buildQueryResponse<SourceFullSchema & { description: string }>(
             result.map(item => {
                 const { id, name, description, addresses } = item;
                 return {
