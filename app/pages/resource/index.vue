@@ -21,6 +21,9 @@
       </v-row>
       <template #loading />
     </v-infinite-scroll>
+    <v-row class="flex justify-end">
+      <CreateResourceForm title="Create Resource" />
+    </v-row>
   </v-container>
 </template>
 

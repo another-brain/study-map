@@ -6,7 +6,7 @@ export function buildErrorResponse(statusCode: StatusCodes, error: Error): Error
     consola.error(error.message);
     return createError({
         statusCode,
-        message: error.message,
+        statusMessage: error.message,
         data: { error }
     });
 }
