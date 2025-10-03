@@ -68,6 +68,8 @@
 </template>
 
 <script lang="ts" setup>
+import resource from '~/services/resource';
+
 const dialog = ref(false);
 const { title } = defineProps<{ title: string }>();
 const requiredRule = (value: string | number | undefined) =>
@@ -116,7 +118,7 @@ const loading = ref(false);
 const { send } = useMessageStore();
 async function handleSubmit() {
   loading.value = true;
-  const result = await useCreateResource(req.value);
+  const result = await resource.create(req.value);
   loading.value = false;
   if (result instanceof Error) {
     send({
