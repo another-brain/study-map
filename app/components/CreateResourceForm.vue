@@ -18,7 +18,13 @@
             <v-col>
               <v-text-field v-model="url" label="URL" required :rules="[requiredRule]">
                 <template #append>
-                  <v-btn icon="mdi-magnify" color="primary" variant="tonal" />
+                  <v-btn
+                    icon="mdi-magnify"
+                    color="primary"
+                    variant="tonal"
+                    @click="handleRecognize"
+                    :loading="recognizing"
+                  />
                 </template>
               </v-text-field>
             </v-col>
@@ -68,6 +74,7 @@
 </template>
 
 <script lang="ts" setup>
+import proxy from '~/services/proxy';
 import resource from '~/services/resource';
 
 const dialog = ref(false);
@@ -92,7 +99,7 @@ const {
   fetching
 } = useSearchSource(text, 10);
 const items = data.value.concat({ id: 0, name: '' });
-const source = ref(0);
+const source = ref<number>();
 
 function fetchNextPageItems(isIntersecting: boolean) {
   if (
@@ -106,10 +113,28 @@ function fetchNextPageItems(isIntersecting: boolean) {
   }
 }
 
+const recognizing = ref(false);
+async function handleRecognize() {
+  recognizing.value = true;
+  const result = await proxy.parse(url.value);
+  recognizing.value = false;
+  if (result instanceof Error) {
+    send({
+      content: result.message,
+      type: MessageType.Error
+    });
+  } else {
+    send({
+      content: `Recognize Source ${url.value} success`,
+      type: MessageType.Info
+    });
+  }
+}
+
 const req = computed(() => ({
   url: url.value,
   name: name.value,
-  sourceId: source.value,
+  sourceId: source.value ?? 0,
   description: description.value,
   score: 0
 }));

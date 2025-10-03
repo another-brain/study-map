@@ -1,5 +1,5 @@
 import z from 'zod';
-import { keyword } from './utils';
+import { keyword, url } from './utils';
 
 export const idSchema = z.coerce.number().min(1);
 
@@ -14,4 +14,8 @@ export const searchSchema = paginationSchema.extend({
 
 export const querySchema = searchSchema.extend({
     fields: z.array(z.string()).optional()
+});
+
+export const parserSchema = z.object({
+    url
 });
