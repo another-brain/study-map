@@ -8,6 +8,6 @@ export const useUpdateResource = (id: number, body: ResourceSchema) => {
                 body
             });
         },
-        { lazy: true }
+        { immediate: false }
     );
 };

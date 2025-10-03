@@ -8,6 +8,6 @@ export const useCreateSource = (body: SourceSchema) => {
                 body
             });
         },
-        { lazy: true }
+        { immediate: false }
     );
 };

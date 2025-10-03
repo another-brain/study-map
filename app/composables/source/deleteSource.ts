@@ -5,6 +5,6 @@ export const useDeleteSource = (id: number) => {
                 method: 'DELETE'
             });
         },
-        { lazy: true }
+        { immediate: false }
     );
 };
