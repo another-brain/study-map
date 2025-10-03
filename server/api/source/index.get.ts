@@ -19,26 +19,12 @@ export default defineEventHandler(async event => {
             const { limit, offset } = pager(page, size, count);
             const result = await tx.query.source.findMany({
                 limit,
-                offset,
-                with: {
-                    addresses: true
-                }
+                offset
             });
             return { count, result };
         });
         setResponseStatus(event, StatusCodes.OK);
-        return buildQueryResponse<SourceFullSchema & { description: string }>(
-            result.map(item => {
-                const { id, name, description, addresses } = item;
-                return {
-                    id,
-                    name,
-                    description,
-                    urls: addresses.map(address => address.url)
-                };
-            }),
-            count
-        );
+        return buildQueryResponse<SourceFullSchema>(result, count);
     } catch (err) {
         throw buildErrorResponse(StatusCodes.INTERNAL_SERVER_ERROR, err as Error);
     }

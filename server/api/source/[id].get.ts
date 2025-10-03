@@ -12,22 +12,13 @@ export default defineEventHandler(async event => {
     try {
         const db = useDB();
         const result = await db.query.source.findFirst({
-            where: (source, { eq }) => eq(source.id, data),
-            with: {
-                addresses: true
-            }
+            where: (source, { eq }) => eq(source.id, data)
         });
         if (!result) {
             throw buildErrorResponse(StatusCodes.NOT_FOUND, new Error(`source ${id} not exist!`));
         }
         setResponseStatus(event, StatusCodes.OK);
-        const resp: SourceFullSchema & { description: string } = {
-            id: result.id,
-            name: result.name,
-            description: result.description,
-            urls: result.addresses.map(address => address.url)
-        };
-        return resp;
+        return result as SourceFullSchema;
     } catch (err) {
         throw buildErrorResponse(StatusCodes.INTERNAL_SERVER_ERROR, err as Error);
     }

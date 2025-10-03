@@ -1,6 +1,9 @@
 import { StatusCodes } from 'http-status-codes';
 import { idSchema } from '~~/server/models/api/common';
-import type { ResourceFullSchema } from '~~/server/models/api/resource_management';
+import type {
+    ResourceFullSchema,
+    SourceFullSchema
+} from '~~/server/models/api/resource_management';
 import { buildErrorResponse } from '~~/server/utils/api';
 
 export default defineEventHandler(async event => {
@@ -12,13 +15,14 @@ export default defineEventHandler(async event => {
     try {
         const db = useDB();
         const result = await db.query.resource.findFirst({
-            where: (resource, { eq }) => eq(resource.id, data)
+            where: (resource, { eq }) => eq(resource.id, data),
+            with: { source: true }
         });
         if (!result) {
             throw buildErrorResponse(StatusCodes.NOT_FOUND, new Error(`resource ${id} not exist!`));
         }
         setResponseStatus(event, StatusCodes.OK);
-        return result as ResourceFullSchema;
+        return result as ResourceFullSchema & { source: SourceFullSchema };
     } catch (err) {
         throw buildErrorResponse(StatusCodes.INTERNAL_SERVER_ERROR, err as Error);
     }

@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import { sourceSchema } from '~~/server/models/api/resource_management';
-import { address, source } from '~~/server/models/orm/resource_management';
+import { source } from '~~/server/models/orm/resource_management';
 import { buildErrorResponse } from '~~/server/utils/api';
 
 export default defineEventHandler(async event => {
@@ -11,14 +11,8 @@ export default defineEventHandler(async event => {
     }
     try {
         const db = useDB();
-        const [id] = await db.transaction(async tx => {
-            const { name, description, urls } = data;
-            const result = await tx.insert(source).values({ name, description });
-            const sourceId = result[0].insertId;
-            const addresses = urls.map(url => ({ url, sourceId }));
-            await tx.insert(address).values(addresses);
-            return [sourceId];
-        });
+        const result = await db.insert(source).values(data);
+        const id = result[0].insertId;
         setResponseStatus(event, StatusCodes.CREATED);
         return { id };
     } catch (err) {

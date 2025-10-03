@@ -1,7 +1,6 @@
 export enum TableName {
     Resource = 'resource',
     Source = 'source',
-    Address = 'address',
     Demand = 'demand',
     Project = 'project',
     ProjectToDemands = 'project_to_demands',

@@ -1,35 +1,24 @@
-import { eq, inArray } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { StatusCodes } from 'http-status-codes';
-import { sourceSchemaWithId } from '~~/server/models/api/resource_management';
-import { address, source } from '~~/server/models/orm/resource_management';
+import { idSchema } from '~~/server/models/api/common';
+import { sourceSchema } from '~~/server/models/api/resource_management';
+import { source } from '~~/server/models/orm/resource_management';
 import { buildErrorResponse } from '~~/server/utils/api';
 
 export default defineEventHandler(async event => {
-    const id = getRouterParam(event, 'id');
+    const idParam = getRouterParam(event, 'id');
+    const { success: rSuccess, data: id, error: rError } = idSchema.safeParse(idParam);
+    if (!rSuccess) {
+        throw buildErrorResponse(StatusCodes.BAD_REQUEST, rError);
+    }
     const body = await readBody(event);
-    const { success, data, error } = sourceSchemaWithId.safeParse({ id, ...body });
+    const { success, data, error } = sourceSchema.safeParse(body);
     if (!success) {
         throw buildErrorResponse(StatusCodes.BAD_REQUEST, error);
     }
     try {
         const db = useDB();
-        await db.transaction(async tx => {
-            const sourceId = data.id;
-            await tx.update(source).set(data).where(eq(source.id, sourceId));
-            const oldAddresses = await tx.query.address.findMany({
-                where: (address, { eq }) => eq(address.sourceId, sourceId)
-            });
-            const oldUrls = new Set(oldAddresses.map(address => address.url));
-            const newUrls = new Set(data.urls);
-            const addressesToInsert = Array.from(newUrls.difference(oldUrls)).map(url => ({
-                url,
-                sourceId
-            }));
-            await tx
-                .delete(address)
-                .where(inArray(address.url, Array.from(oldUrls.difference(newUrls))));
-            await tx.insert(address).values(addressesToInsert);
-        });
+        await db.update(source).set(data).where(eq(source.id, id));
         setResponseStatus(event, StatusCodes.NO_CONTENT);
         return null;
     } catch (err) {

@@ -4,41 +4,30 @@ import { TableName } from '../../consts/db';
 import { fields } from './utils';
 const { id, name, url, description, refId } = fields;
 
+export const source = mysqlTable(TableName.Source, {
+    id,
+    name,
+    url,
+    description
+});
+
 export const resource = mysqlTable(
     TableName.Resource,
     {
         id,
         name: varchar({ length: 100 }).notNull(),
         url,
-        source: varchar({ length: 500 })
-            .notNull()
-            .references(() => address.url),
+        sourceId: refId(source.id),
         score: tinyint().notNull(),
         description
     },
-    table => [unique().on(table.name, table.source)]
+    table => [unique().on(table.name, table.sourceId)]
 );
 
-export const source = mysqlTable(TableName.Source, {
-    id,
-    name,
-    description
-});
-
-export const address = mysqlTable(TableName.Address, {
-    id,
-    url,
-    sourceId: refId(source.id)
-});
-
 export const resourceRelations = relations(resource, ({ one }) => ({
-    source: one(address)
+    source: one(source)
 }));
 
 export const sourceRelations = relations(source, ({ many }) => ({
-    addresses: many(address)
-}));
-
-export const addressRelations = relations(address, ({ one }) => ({
-    source: one(source)
+    resources: many(resource)
 }));
