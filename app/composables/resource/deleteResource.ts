@@ -1,10 +1,9 @@
-export const useDeleteResource = (id: number) => {
-    return useAsyncData(
-        () => {
-            return $fetch(`/api/resource/${id}`, {
-                method: 'DELETE'
-            });
-        },
-        { immediate: false }
-    );
+export const useDeleteResource = async (id: number) => {
+    try {
+        return await $fetch(`/api/resource/${id}`, {
+            method: 'DELETE'
+        });
+    } catch (err) {
+        return err as Error;
+    }
 };
