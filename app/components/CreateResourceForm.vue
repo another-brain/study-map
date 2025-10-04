@@ -13,7 +13,7 @@
         <v-btn icon="mdi-close" variant="text" @click="handleClose" />
       </template>
       <template #text>
-        <v-form>
+        <v-form @submit="handleSubmit">
           <v-row>
             <v-col>
               <v-text-field v-model="url" label="URL" required :rules="[requiredRule]">
@@ -22,8 +22,8 @@
                     icon="mdi-magnify"
                     color="primary"
                     variant="tonal"
-                    @click="handleRecognize"
                     :loading="recognizing"
+                    @click="handleRecognize"
                   />
                 </template>
               </v-text-field>
@@ -59,17 +59,18 @@
               <v-textarea v-model="description" label="Description" />
             </v-col>
           </v-row>
+          <v-btn
+            block
+            color="primary"
+            type="submit"
+            text="Submit"
+            :loading="loading"
+            size="large"
+          />
         </v-form>
       </template>
-      <v-btn
-        block
-        color="primary"
-        text="Submit"
-        :loading="loading"
-        size="large"
-        @click="handleSubmit"
-      />
     </v-card>
+    <CreateSourceForm ref="form" />
   </v-dialog>
 </template>
 
@@ -79,8 +80,6 @@ import resource from '~/services/resource';
 
 const dialog = ref(false);
 const { title } = defineProps<{ title: string }>();
-const requiredRule = (value: string | number | undefined) =>
-  value ? true : 'This field cannot be empty!';
 function handleClose() {
   dialog.value = false;
 }
@@ -114,9 +113,11 @@ function fetchNextPageItems(isIntersecting: boolean) {
 }
 
 const recognizing = ref(false);
+const form = ref<{ open: (name: string, url: string, description: string) => void }>();
+const sourceURL = computed(() => new URL(url.value).origin);
 async function handleRecognize() {
   recognizing.value = true;
-  const result = await proxy.parse(url.value);
+  const result = await proxy.parse(sourceURL.value);
   recognizing.value = false;
   if (result instanceof Error) {
     send({
@@ -124,26 +125,21 @@ async function handleRecognize() {
       type: MessageType.Error
     });
   } else {
-    send({
-      content: `Recognize Source ${url.value} success`,
-      type: MessageType.Success
-    });
+    form.value?.open(result.title, sourceURL.value, result.description);
   }
 }
-
-const req = computed(() => ({
-  url: url.value,
-  name: name.value,
-  sourceId: source.value ?? 0,
-  description: description.value,
-  score: 0
-}));
 
 const loading = ref(false);
 const { send } = useMessageStore();
 async function handleSubmit() {
   loading.value = true;
-  const result = await resource.create(req.value);
+  const result = await resource.create({
+    url: url.value,
+    name: name.value,
+    sourceId: source.value ?? 0,
+    description: description.value,
+    score: 0
+  });
   loading.value = false;
   if (result instanceof Error) {
     send({
