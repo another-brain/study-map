@@ -126,7 +126,7 @@ async function handleRecognize() {
   } else {
     send({
       content: `Recognize Source ${url.value} success`,
-      type: MessageType.Info
+      type: MessageType.Success
     });
   }
 }
@@ -153,7 +153,7 @@ async function handleSubmit() {
   } else {
     send({
       content: `Create Resource ${result.id} success`,
-      type: MessageType.Info
+      type: MessageType.Success
     });
     handleClose();
   }

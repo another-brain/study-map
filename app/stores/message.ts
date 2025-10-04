@@ -32,5 +32,5 @@ export type Message = {
 
 export const enum MessageType {
     Error = 'error',
-    Info = 'primary'
+    Success = 'success'
 }
