@@ -13,7 +13,7 @@
         <v-btn icon="mdi-close" variant="text" @click="handleClose" />
       </template>
       <template #text>
-        <v-form ref="form" @submit="handleSubmit">
+        <v-form ref="form" @submit.prevent="handleSubmit">
           <v-row>
             <v-col>
               <v-text-field v-model="url" label="URL" required :rules="[requiredRule]">
@@ -193,6 +193,7 @@ async function handleSave(id: number) {
 
 const loading = ref(false);
 const { send } = useMessageStore();
+const emit = defineEmits(['submit']);
 async function handleSubmit() {
   loading.value = true;
   const result = await resource.create({
@@ -214,6 +215,7 @@ async function handleSubmit() {
       type: MessageType.Success
     });
     handleClose();
+    emit('submit');
   }
 }
 </script>

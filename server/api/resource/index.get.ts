@@ -20,12 +20,15 @@ export default defineEventHandler(async event => {
         const ids = (await index.search(keyword, false)).map(id => Number(id));
         const db = useDB();
         const { count, result } = await db.transaction(async tx => {
-            const count = await tx.$count(resource, inArray(resource.id, ids));
+            const count = await tx.$count(
+                resource,
+                keyword ? inArray(resource.id, ids) : undefined
+            );
             const { limit, offset } = pager(page, size, count);
             const result = await db.query.resource.findMany({
                 limit,
                 offset,
-                where: (obj, { inArray }) => inArray(obj.id, ids),
+                where: keyword ? (obj, { inArray }) => inArray(obj.id, ids) : undefined,
                 columns: fields ? fields.map(f => ({ [f]: true })).reduce(mergeObj, {}) : undefined
             });
             return { count, result };

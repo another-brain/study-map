@@ -22,7 +22,7 @@
       <template #loading />
     </v-infinite-scroll>
     <v-row class="flex justify-end">
-      <CreateResourceForm title="Create Resource" />
+      <CreateResourceForm title="Create Resource" @submit="refresh" />
     </v-row>
   </v-container>
 </template>

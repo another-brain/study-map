@@ -24,26 +24,23 @@ class SearchIndex {
         this.titles = new Map();
     }
     public async add(id: number, title: string, contents: string[]) {
-        return await this.index
-            .addAsync(id, cutWords(contents).join(' '))
-            .then(() => {
-                this.titles.set(id, title);
-                consola.info(`add ${this.key} index ${id} succeeded`);
-            })
-            .catch(err => {
-                consola.error(`add ${this.key} index ${id} failed: ${err}`);
-            });
+        try {
+            this.index.remove(id);
+            this.index.add(id, cutWords(contents).join(' '));
+            this.titles.set(id, title);
+            consola.info(`add ${this.key} index ${id} succeeded`);
+        } catch (err) {
+            consola.error(`add ${this.key} index ${id} failed: ${err}`);
+        }
     }
     public async remove(id: number) {
-        return await this.index
-            .removeAsync(id)
-            .then(() => {
-                this.titles.delete(id);
-                consola.info(`remove ${this.key} index ${id} succeeded`);
-            })
-            .catch(err => {
-                consola.error(`remove ${this.key} index ${id} failed: ${err}`);
-            });
+        try {
+            this.index.remove(id);
+            this.titles.delete(id);
+            consola.info(`remove ${this.key} index ${id} succeeded`);
+        } catch (err) {
+            consola.error(`remove ${this.key} index ${id} failed: ${err}`);
+        }
     }
     public async update(id: number, title: string, contents: string[]) {
         return await this.index
@@ -72,7 +69,7 @@ class SearchIndex {
                 })
             );
         }
-        return (await Promise.all(tasks)).flat();
+        return Array.from(new Set((await Promise.all(tasks)).flat()));
     }
     public getName(id: number) {
         return this.titles.get(id);
