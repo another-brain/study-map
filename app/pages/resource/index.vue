@@ -15,7 +15,7 @@
             :id="item.id"
             :title="item.name!"
             :text="item.description!"
-            icon="https://cdn.vuetifyjs.com/images/logos/v-alt.svg"
+            :icon="item.source.logo || 'https://cdn.vuetifyjs.com/images/logos/v-alt.svg'"
           />
         </template>
       </v-row>
@@ -30,11 +30,7 @@
 <script lang="ts" setup>
 const input = ref<{ text: string }>();
 const keyword = computed(() => input.value?.text ?? '');
-const { loading, data, error, isLastPage, page, refresh, fetching } = useListResource(keyword, 20, [
-  'id',
-  'name',
-  'description'
-]);
+const { loading, data, error, isLastPage, page, refresh, fetching } = useListResource(keyword, 20);
 
 type InfiniteScrollStatus = 'ok' | 'empty' | 'loading' | 'error';
 function fetchNextPage({ done }: { done: (status: InfiniteScrollStatus) => void }) {

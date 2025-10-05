@@ -19,9 +19,7 @@ const _resourceSchemaWithId = resourceSchema.extend({
 
 export type ResourceFullSchema = Required<z.infer<typeof _resourceSchemaWithId>>;
 
-export type ResourceQueryResp = ResourceFullSchema extends infer T
-    ? { [K in keyof T]: K extends 'id' ? T[K] : T[K] | undefined }
-    : never;
+export type ResourceQueryResp = ResourceFullSchema & { source: SourceFullSchema };
 
 export const sourceSchema = z.object({
     name,
@@ -37,7 +35,3 @@ const _sourceSchemaWithId = sourceSchema.extend({
 });
 
 export type SourceFullSchema = Required<z.infer<typeof _sourceSchemaWithId>>;
-
-export type SourceQueryResp = SourceFullSchema extends infer T
-    ? { [K in keyof T]: K extends 'id' ? T[K] : T[K] | undefined }
-    : never;

@@ -26,7 +26,10 @@ export const resource = mysqlTable(
 );
 
 export const resourceRelations = relations(resource, ({ one }) => ({
-    source: one(source)
+    source: one(source, {
+        fields: [resource.sourceId],
+        references: [source.id]
+    })
 }));
 
 export const sourceRelations = relations(source, ({ many }) => ({

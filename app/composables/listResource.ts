@@ -3,18 +3,13 @@ import { get } from '~/utils/query';
 import type { ResourceQueryResp } from '~~/server/models/api/resource_management';
 import type { SearchResponse } from '~~/shared/types/query';
 
-export const useListResource = (
-    keyword: Ref<string | undefined>,
-    initialPageSize: number,
-    fields?: string[]
-) => {
+export const useListResource = (keyword: Ref<string | undefined>, initialPageSize: number) => {
     return usePagination(
         (page, size) =>
             get('/api/resource', {
                 page,
                 size,
-                keyword: keyword.value,
-                fields
+                keyword: keyword.value
             }),
         {
             initialData: {

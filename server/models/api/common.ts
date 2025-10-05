@@ -12,10 +12,6 @@ export const searchSchema = paginationSchema.extend({
     keyword
 });
 
-export const querySchema = searchSchema.extend({
-    fields: z.array(z.string()).optional()
-});
-
 export const parserSchema = z.object({
     url
 });

@@ -32,11 +32,7 @@ const dialog = ref(false);
 const name = ref('');
 const url = ref('');
 const logo = ref('');
-const logoDisplay = computed(() => {
-  const query = new URLSearchParams();
-  query.set('url', logo.value);
-  return `/api/img?${query.toString()}`;
-});
+const logoDisplay = computed(() => useImage(logo.value));
 const description = ref('');
 
 defineExpose({
