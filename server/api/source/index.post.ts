@@ -11,6 +11,7 @@ export default defineEventHandler(async event => {
     }
     try {
         const db = useDB();
+        data.url = new URL(data.url).origin;
         const result = await db.insert(source).values(data);
         const id = result[0].insertId;
         setResponseStatus(event, StatusCodes.CREATED);

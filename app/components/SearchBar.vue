@@ -16,7 +16,6 @@
             :label="modeLabels[Mode.BasicSearch]"
             :items="items"
             hide-no-data
-            hide-selected
             @update:model-value="submit"
           >
             <template #loader>

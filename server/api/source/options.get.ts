@@ -12,15 +12,17 @@ export default defineEventHandler(async event => {
     }
     try {
         const { keyword, page, size } = data;
-        const matchText = likeStr(keyword ?? '');
         const db = useDB();
         const { count, result } = await db.transaction(async tx => {
-            const count = await tx.$count(source, like(source.name, matchText));
+            const count = await tx.$count(
+                source,
+                keyword ? like(source.name, likeStr(keyword)) : undefined
+            );
             const { limit, offset } = pager(page, size, count);
             const result = await db.query.source.findMany({
                 limit,
                 offset,
-                where: (obj, { like }) => like(obj.name, matchText),
+                where: keyword ? (obj, { like }) => like(obj.name, likeStr(keyword)) : undefined,
                 columns: {
                     id: true,
                     name: true

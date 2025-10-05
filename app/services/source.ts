@@ -29,5 +29,15 @@ export default {
         } catch (err) {
             return err as Error;
         }
+    },
+    parse: async (url: string) => {
+        try {
+            return await $fetch('/api/source/parser', {
+                method: 'POST',
+                body: { url }
+            });
+        } catch (err) {
+            return err as Error;
+        }
     }
 };

@@ -48,6 +48,7 @@ function handleCancel() {
 
 const loading = ref(false);
 const { send } = useMessageStore();
+const emit = defineEmits(['save']);
 async function handleSave() {
   loading.value = true;
   const result = await source.create({
@@ -66,6 +67,7 @@ async function handleSave() {
       content: `Save Source ${result.id} success`,
       type: MessageType.Success
     });
+    emit('save', result.id);
     handleCancel();
   }
 }

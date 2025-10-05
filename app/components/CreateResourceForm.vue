@@ -36,13 +36,12 @@
             <v-col cols="12" sm="5" xs="6">
               <v-autocomplete
                 v-model:search="text"
-                v-model:model-value="source"
+                v-model:model-value="sourceId"
                 label="Source"
                 :items="items"
                 item-title="name"
                 item-value="id"
                 hide-no-data
-                hide-selected
                 required
                 :rules="[requiredRule]"
               >
@@ -70,13 +69,14 @@
         </v-form>
       </template>
     </v-card>
-    <CreateSourceForm ref="form" />
+    <CreateSourceForm ref="form" @save="handleSave" />
   </v-dialog>
 </template>
 
 <script lang="ts" setup>
 import proxy from '~/services/proxy';
 import resource from '~/services/resource';
+import source from '~/services/source';
 
 const dialog = ref(false);
 const { title } = defineProps<{ title: string }>();
@@ -91,14 +91,14 @@ const description = ref('');
 const text = ref('');
 const {
   loading: loadingItems,
-  data,
+  data: items,
   error: itemsError,
   page,
   isLastPage,
-  fetching
+  fetching,
+  refresh
 } = useSearchSource(text, 10);
-const items = data.value.concat({ id: 0, name: '' });
-const source = ref<number>();
+const sourceId = ref<number>();
 
 function fetchNextPageItems(isIntersecting: boolean) {
   if (
@@ -117,16 +117,35 @@ const form = ref<{ open: (name: string, url: string, description: string) => voi
 const sourceURL = computed(() => new URL(url.value).origin);
 async function handleRecognize() {
   recognizing.value = true;
-  const result = await proxy.parse(sourceURL.value);
-  recognizing.value = false;
-  if (result instanceof Error) {
-    send({
-      content: result.message,
-      type: MessageType.Error
-    });
-  } else {
+  await (async () => {
+    const record = await source.parse(sourceURL.value);
+    if (record instanceof Error) {
+      send({
+        content: record.message,
+        type: MessageType.Error
+      });
+      return;
+    }
+    if (record.id !== 0) {
+      sourceId.value = record.id;
+      return;
+    }
+    const result = await proxy.parse(sourceURL.value);
+    if (result instanceof Error) {
+      send({
+        content: result.message,
+        type: MessageType.Error
+      });
+      return;
+    }
     form.value?.open(result.title, sourceURL.value, result.description);
-  }
+  })();
+  recognizing.value = false;
+}
+
+async function handleSave(id: number) {
+  await refresh();
+  sourceId.value = id;
 }
 
 const loading = ref(false);
@@ -136,7 +155,7 @@ async function handleSubmit() {
   const result = await resource.create({
     url: url.value,
     name: name.value,
-    sourceId: source.value ?? 0,
+    sourceId: sourceId.value ?? 0,
     description: description.value,
     score: 0
   });

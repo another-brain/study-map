@@ -18,6 +18,7 @@ export default defineEventHandler(async event => {
     }
     try {
         const db = useDB();
+        data.url = new URL(data.url).origin;
         await db.update(source).set(data).where(eq(source.id, id));
         setResponseStatus(event, StatusCodes.NO_CONTENT);
         return null;
