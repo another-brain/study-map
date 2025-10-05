@@ -1,14 +1,21 @@
 <template>
-  <v-col cols="12" sm="6" md="4" lg="3" xl="2">
+  <v-col cols="12" sm="6" md="4" lg="3" xl="2" class="flex">
     <v-card
       color="primary"
       hover
       class="mx-auto"
       :title="title"
-      :text="text"
       :prepend-avatar="icon"
       @click="handleClick"
-    />
+    >
+      <template #text>
+        <v-responsive :aspect-ratio="3">
+          <div class="line-clamp-4">
+            {{ text }}
+          </div>
+        </v-responsive>
+      </template>
+    </v-card>
   </v-col>
 </template>
 
