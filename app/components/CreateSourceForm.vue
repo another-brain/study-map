@@ -3,12 +3,11 @@
     <v-card title="Detected Source">
       <template #text>
         <v-row>
-          <v-col>
-            <v-text-field v-model="name" label="Name" required :rules="[requiredRule]" />
+          <v-col cols="3">
+            <v-img :src="logoDisplay" min-width="55" />
           </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
+          <v-col cols="12" sm="9">
+            <v-text-field v-model="name" label="Name" required :rules="[requiredRule]" />
             <v-text-field :model-value="url" label="URL" disabled />
           </v-col>
         </v-row>
@@ -32,12 +31,24 @@ import source from '~/services/source';
 const dialog = ref(false);
 const name = ref('');
 const url = ref('');
+const logo = ref('');
+const logoDisplay = computed(() => {
+  const query = new URLSearchParams();
+  query.set('url', logo.value);
+  return `/api/img?${query.toString()}`;
+});
 const description = ref('');
 
 defineExpose({
-  open: (defaultName: string, defaultURL: string, defaultDescription: string) => {
+  open: (
+    defaultName: string,
+    defaultURL: string,
+    defaultLogo: string,
+    defaultDescription: string
+  ) => {
     name.value = defaultName;
     url.value = defaultURL;
+    logo.value = defaultLogo;
     description.value = defaultDescription;
     dialog.value = true;
   }
@@ -54,6 +65,7 @@ async function handleSave() {
   const result = await source.create({
     name: name.value,
     url: url.value,
+    logo: logo.value,
     description: description.value
   });
   loading.value = false;

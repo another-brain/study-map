@@ -155,7 +155,9 @@ async function handleRecognize() {
 }
 
 const recognizingSource = ref(false);
-const subForm = ref<{ open: (name: string, url: string, description: string) => void }>();
+const subForm = ref<{
+  open: (name: string, url: string, logo: string, description: string) => void;
+}>();
 const sourceURL = computed(() => new URL(url.value).origin);
 async function handleRecognizeSource() {
   recognizingSource.value = true;
@@ -175,7 +177,7 @@ async function handleRecognizeSource() {
       content = result.message;
       return;
     }
-    subForm.value?.open(result.title, sourceURL.value, result.description);
+    subForm.value?.open(result.title, sourceURL.value, result.logo.url, result.description);
   })();
   if (content !== undefined) {
     send({

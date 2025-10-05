@@ -2,13 +2,14 @@ import { relations } from 'drizzle-orm';
 import { mysqlTable, tinyint, unique, varchar } from 'drizzle-orm/mysql-core';
 import { TableName } from '../../consts/db';
 import { fields } from './utils';
-const { id, name, url, description, refId } = fields;
+const { id, name, url, logo, description, refId } = fields;
 
 export const source = mysqlTable(TableName.Source, {
     id,
     name,
     url,
-    description
+    description,
+    logo
 });
 
 export const resource = mysqlTable(

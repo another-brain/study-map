@@ -26,6 +26,7 @@ export type ResourceQueryResp = ResourceFullSchema extends infer T
 export const sourceSchema = z.object({
     name,
     url,
+    logo: url,
     description
 });
 
