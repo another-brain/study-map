@@ -13,7 +13,7 @@
         <v-btn icon="mdi-close" variant="text" @click="handleClose" />
       </template>
       <template #text>
-        <v-form @submit="handleSubmit">
+        <v-form ref="form" @submit="handleSubmit">
           <v-row>
             <v-col>
               <v-text-field v-model="url" label="URL" required :rules="[requiredRule]">
@@ -69,7 +69,7 @@
         </v-form>
       </template>
     </v-card>
-    <CreateSourceForm ref="form" @save="handleSave" />
+    <CreateSourceForm ref="subForm" @save="handleSave" />
   </v-dialog>
 </template>
 
@@ -79,9 +79,11 @@ import resource from '~/services/resource';
 import source from '~/services/source';
 
 const dialog = ref(false);
+const form = ref<{ reset: () => void }>();
 const { title } = defineProps<{ title: string }>();
 function handleClose() {
   dialog.value = false;
+  form.value?.reset();
 }
 
 const url = ref('');
@@ -113,7 +115,7 @@ function fetchNextPageItems(isIntersecting: boolean) {
 }
 
 const recognizing = ref(false);
-const form = ref<{ open: (name: string, url: string, description: string) => void }>();
+const subForm = ref<{ open: (name: string, url: string, description: string) => void }>();
 const sourceURL = computed(() => new URL(url.value).origin);
 async function handleRecognize() {
   recognizing.value = true;
@@ -138,7 +140,7 @@ async function handleRecognize() {
       });
       return;
     }
-    form.value?.open(result.title, sourceURL.value, result.description);
+    subForm.value?.open(result.title, sourceURL.value, result.description);
   })();
   recognizing.value = false;
 }
