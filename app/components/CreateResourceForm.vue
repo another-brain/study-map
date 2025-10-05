@@ -30,10 +30,10 @@
             </v-col>
           </v-row>
           <v-row dense>
-            <v-col cols="12" sm="7" xs="6">
+            <v-col cols="12" sm="6" xs="6">
               <v-text-field v-model="name" label="Name" required :rules="[requiredRule]" />
             </v-col>
-            <v-col cols="12" sm="5" xs="6">
+            <v-col cols="12" sm="6" xs="6">
               <v-autocomplete
                 v-model:search="text"
                 v-model:model-value="sourceId"
@@ -45,6 +45,15 @@
                 required
                 :rules="[requiredRule]"
               >
+                <template #append>
+                  <v-btn
+                    icon="mdi-magnify"
+                    color="primary"
+                    variant="tonal"
+                    :loading="recognizingSource"
+                    @click="handleRecognizeSource"
+                  />
+                </template>
                 <template #append-item>
                   <div v-intersect="fetchNextPageItems">
                     <v-progress-linear v-show="loadingItems" indeterminate color="primary" />
@@ -115,17 +124,46 @@ function fetchNextPageItems(isIntersecting: boolean) {
 }
 
 const recognizing = ref(false);
-const subForm = ref<{ open: (name: string, url: string, description: string) => void }>();
-const sourceURL = computed(() => new URL(url.value).origin);
 async function handleRecognize() {
   recognizing.value = true;
+  let content: string | undefined;
+  await (async () => {
+    const record = await resource.parse(url.value);
+    if (record instanceof Error) {
+      content = record.message;
+      return;
+    }
+    if (record.id !== 0) {
+      content = 'Resource already exists';
+      return;
+    }
+    const result = await proxy.parse(url.value);
+    if (result instanceof Error) {
+      content = result.message;
+      return;
+    }
+    name.value = result.title;
+    description.value = result.description;
+  })();
+  if (content !== undefined) {
+    send({
+      content,
+      type: MessageType.Error
+    });
+  }
+  recognizing.value = false;
+}
+
+const recognizingSource = ref(false);
+const subForm = ref<{ open: (name: string, url: string, description: string) => void }>();
+const sourceURL = computed(() => new URL(url.value).origin);
+async function handleRecognizeSource() {
+  recognizingSource.value = true;
+  let content: string | undefined;
   await (async () => {
     const record = await source.parse(sourceURL.value);
     if (record instanceof Error) {
-      send({
-        content: record.message,
-        type: MessageType.Error
-      });
+      content = record.message;
       return;
     }
     if (record.id !== 0) {
@@ -134,15 +172,18 @@ async function handleRecognize() {
     }
     const result = await proxy.parse(sourceURL.value);
     if (result instanceof Error) {
-      send({
-        content: result.message,
-        type: MessageType.Error
-      });
+      content = result.message;
       return;
     }
     subForm.value?.open(result.title, sourceURL.value, result.description);
   })();
-  recognizing.value = false;
+  if (content !== undefined) {
+    send({
+      content,
+      type: MessageType.Error
+    });
+  }
+  recognizingSource.value = false;
 }
 
 async function handleSave(id: number) {
