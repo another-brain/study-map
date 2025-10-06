@@ -18,13 +18,21 @@
             <v-col>
               <v-text-field v-model="url" label="URL" required :rules="[requiredRule]">
                 <template #append>
-                  <v-btn
-                    icon="mdi-magnify"
-                    color="primary"
-                    variant="tonal"
-                    :loading="recognizing"
-                    @click="handleRecognize"
-                  />
+                  <v-tooltip
+                    text="Recognize and auto load resource info through URL"
+                    location="bottom end"
+                  >
+                    <template #activator="{ props }">
+                      <v-btn
+                        icon="mdi-magnify"
+                        color="primary"
+                        variant="tonal"
+                        v-bind="props"
+                        :loading="recognizing"
+                        @click="handleRecognize"
+                      />
+                    </template>
+                  </v-tooltip>
                 </template>
               </v-text-field>
             </v-col>
@@ -46,13 +54,21 @@
                 :rules="[requiredRule]"
               >
                 <template #append>
-                  <v-btn
-                    icon="mdi-magnify"
-                    color="primary"
-                    variant="tonal"
-                    :loading="recognizingSource"
-                    @click="handleRecognizeSource"
-                  />
+                  <v-tooltip
+                    text="Recognize and auto load source info through resource URL"
+                    location="bottom end"
+                  >
+                    <template #activator="{ props }">
+                      <v-btn
+                        icon="mdi-magnify"
+                        color="primary"
+                        variant="tonal"
+                        v-bind="props"
+                        :loading="recognizingSource"
+                        @click="handleRecognizeSource"
+                      />
+                    </template>
+                  </v-tooltip>
                 </template>
                 <template #append-item>
                   <div v-intersect="fetchNextPageItems">
