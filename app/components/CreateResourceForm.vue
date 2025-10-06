@@ -119,6 +119,7 @@ const { title } = defineProps<{ title: string }>();
 function handleClose() {
   dialog.value = false;
   form.value?.reset();
+  sourceId.value = undefined;
 }
 
 const url = ref('');
