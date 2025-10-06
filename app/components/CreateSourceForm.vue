@@ -4,7 +4,7 @@
       <template #text>
         <v-row>
           <v-col cols="3">
-            <LogoImage :url="logo" :origin="url" />
+            <LogoImage ref="logoRef" :url="logo" :origin="url" />
           </v-col>
           <v-col cols="12" sm="9">
             <v-text-field v-model="name" label="Name" required :rules="[requiredRule]" />
@@ -53,6 +53,7 @@ function handleCancel() {
 }
 
 const loading = ref(false);
+const logoRef = ref<{ getSrc: () => string }>();
 const { send } = useMessageStore();
 const emit = defineEmits(['save']);
 async function handleSave() {
@@ -60,7 +61,7 @@ async function handleSave() {
   const result = await source.create({
     name: name.value,
     url: url.value,
-    logo: logo.value,
+    logo: logoRef.value?.getSrc() || logo.value,
     description: description.value
   });
   loading.value = false;
