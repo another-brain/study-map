@@ -158,7 +158,13 @@ const recognizingSource = ref(false);
 const subForm = ref<{
   open: (name: string, url: string, logo: string, description: string) => void;
 }>();
-const sourceURL = computed(() => new URL(url.value).origin);
+const sourceURL = computed(() => {
+  try {
+    return new URL(url.value).origin;
+  } catch {
+    return '';
+  }
+});
 async function handleRecognizeSource() {
   recognizingSource.value = true;
   let content: string | undefined;
