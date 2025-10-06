@@ -3,24 +3,23 @@
 </template>
 
 <script lang="ts" setup>
-import { defaultWebsiteIconPath } from '~/consts/routes';
+import { defaultWebsiteIconName, imgFileFormats } from '~/consts/routes';
 
 const { url, origin } = defineProps<{ url: string; origin: string }>();
 const src = ref(url);
 const srcDisplay = computed(() => {
   const url = new URL(src.value);
   const routes = url.pathname.split('/').filter(part => part !== '');
-  if (routes.length > 0 && routes[routes.length - 1] === defaultWebsiteIconPath) {
+  if (routes.length > 0 && isDefaultWebsiteIconName(routes[routes.length - 1]!)) {
     url.search = '';
     return url.toString();
   }
   return useImage(src.value);
 });
-const reload = ref(false);
+const reloadCount = ref(0);
 function handleError() {
-  if (!reload.value) {
-    src.value = `${origin}/${defaultWebsiteIconPath}`;
-    reload.value = true;
+  if (reloadCount.value < imgFileFormats.length) {
+    src.value = `${origin}/${defaultWebsiteIconName}.${imgFileFormats[reloadCount.value++]}`;
   }
 }
 defineExpose({

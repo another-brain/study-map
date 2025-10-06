@@ -3,4 +3,5 @@ export const enum PageRoutes {
     ResourceManagement = '/resource'
 }
 
-export const defaultWebsiteIconPath = 'favicon.ico';
+export const defaultWebsiteIconName = 'favicon';
+export const imgFileFormats = ['ico', 'png', 'svg', 'jpg', 'webp', 'jpeg', 'gif'];
