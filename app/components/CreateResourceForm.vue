@@ -40,13 +40,20 @@
           </v-row>
           <v-row dense>
             <v-col cols="12" sm="6" xs="6">
-              <v-text-field v-model="name" label="Name" required :rules="[requiredRule]" />
+              <v-text-field
+                v-model="name"
+                label="Name"
+                required
+                :disabled="recognizing"
+                :rules="[requiredRule]"
+              />
             </v-col>
             <v-col cols="12" sm="6" xs="6">
               <v-autocomplete
                 v-model:search="text"
                 v-model:model-value="sourceId"
                 label="Source"
+                :disabled="recognizingSource"
                 :items="items"
                 item-title="name"
                 item-value="id"
@@ -82,7 +89,7 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-textarea v-model="description" label="Description" />
+              <v-textarea v-model="description" label="Description" :disabled="recognizing" />
             </v-col>
           </v-row>
           <v-btn
