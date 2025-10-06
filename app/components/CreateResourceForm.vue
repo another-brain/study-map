@@ -28,6 +28,7 @@
                         color="primary"
                         variant="tonal"
                         v-bind="props"
+                        :disabled="recognizeDisabled"
                         :loading="recognizing"
                         @click="handleRecognize"
                       />
@@ -64,6 +65,7 @@
                         color="primary"
                         variant="tonal"
                         v-bind="props"
+                        :disabled="recognizeDisabled"
                         :loading="recognizingSource"
                         @click="handleRecognizeSource"
                       />
@@ -102,6 +104,7 @@
 import proxy from '~/services/proxy';
 import resource from '~/services/resource';
 import source from '~/services/source';
+import { fields } from '~~/server/models/api/utils';
 
 const dialog = ref(false);
 const form = ref<{ reset: () => void }>();
@@ -140,6 +143,7 @@ function fetchNextPageItems(isIntersecting: boolean) {
 }
 
 const recognizing = ref(false);
+const recognizeDisabled = computed(() => fields.url.safeParse(url.value).error !== undefined);
 async function handleRecognize() {
   recognizing.value = true;
   let content: string | undefined;
@@ -174,13 +178,7 @@ const recognizingSource = ref(false);
 const subForm = ref<{
   open: (name: string, url: string, logo: string, description: string) => void;
 }>();
-const sourceURL = computed(() => {
-  try {
-    return new URL(url.value).origin;
-  } catch {
-    return '';
-  }
-});
+const sourceURL = computed(() => (recognizeDisabled.value ? '' : new URL(url.value).origin));
 async function handleRecognizeSource() {
   recognizingSource.value = true;
   let content: string | undefined;
