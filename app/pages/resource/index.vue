@@ -15,7 +15,8 @@
             :id="item.id"
             :title="item.name!"
             :text="item.description!"
-            :icon="item.source.logo || 'https://cdn.vuetifyjs.com/images/logos/v-alt.svg'"
+            :icon="item.source.logo"
+            :source="item.source.url"
           />
         </template>
       </v-row>

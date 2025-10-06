@@ -4,7 +4,7 @@
       <template #text>
         <v-row>
           <v-col cols="3">
-            <v-img :src="logoDisplay" min-width="55" />
+            <LogoImage :url="logo" :origin="url" />
           </v-col>
           <v-col cols="12" sm="9">
             <v-text-field v-model="name" label="Name" required :rules="[requiredRule]" />
@@ -32,7 +32,6 @@ const dialog = ref(false);
 const name = ref('');
 const url = ref('');
 const logo = ref('');
-const logoDisplay = computed(() => useImage(logo.value));
 const description = ref('');
 
 defineExpose({

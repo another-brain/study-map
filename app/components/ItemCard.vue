@@ -2,7 +2,7 @@
   <v-col cols="12" sm="6" md="4" lg="3" xl="2" class="flex">
     <v-card color="primary" hover class="mx-auto" :title="title" @click="handleClick">
       <template #prepend>
-        <v-avatar :image="iconDisplay" rounded="0" size="x-large" />
+        <LogoImage :url="icon" :origin="source" />
       </template>
       <template #text>
         <v-responsive :aspect-ratio="3">
@@ -21,8 +21,8 @@ const { id, title, text, icon } = defineProps<{
   title: string;
   text: string;
   icon: string;
+  source: string;
 }>();
-const iconDisplay = useImage(icon);
 
 const router = useRouter();
 const route = useRoute();

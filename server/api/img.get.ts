@@ -8,7 +8,7 @@ export default defineEventHandler(async event => {
         throw buildErrorResponse(StatusCodes.BAD_REQUEST, error);
     }
     try {
-        return await $fetch(data.url);
+        return await fetch(data.url);
     } catch (err) {
         throw buildErrorResponse(StatusCodes.INTERNAL_SERVER_ERROR, err as Error);
     }
