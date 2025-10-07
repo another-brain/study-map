@@ -1,5 +1,17 @@
 <template>
-  <v-img :src="srcDisplay" min-width="55" @error="handleError" />
+  <v-img :src="srcDisplay" width="55" @error="handleError">
+    <template #placeholder>
+      <v-sheet
+        height="55"
+        width="55"
+        color="surface"
+        rounded="lg"
+        class="d-flex align-center justify-center"
+      >
+        <v-progress-circular color="info" indeterminate size="40" />
+      </v-sheet>
+    </template>
+  </v-img>
 </template>
 
 <script lang="ts" setup>
