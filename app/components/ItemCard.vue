@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="12" sm="6" md="4" lg="3" xl="2" class="flex">
+  <v-col cols="12" sm="6" md="4" lg="3" xl="2">
     <v-card color="primary" hover class="mx-auto" :title="title" @click="handleClick">
       <template #prepend>
         <LogoImage :url="icon" :origin="source" />
