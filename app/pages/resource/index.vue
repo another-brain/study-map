@@ -77,16 +77,7 @@ function fetchNextPageItems(isIntersecting: boolean) {
   }
 }
 
-const { send } = useMessageStore();
-watch([error, itemsError], ([error, itemsError]) => {
-  const err = error ?? itemsError;
-  if (err) {
-    send({
-      content: err.message,
-      type: MessageType.Error
-    });
-  }
-});
+useNoticeError(error, itemsError);
 </script>
 
 <style></style>
