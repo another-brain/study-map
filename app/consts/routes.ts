@@ -1,6 +1,7 @@
 export const enum PageRoutes {
     HomePage = '/',
-    ResourceManagement = '/resource'
+    ResourceManagement = '/resource',
+    SourceManagement = '/source'
 }
 
 export const defaultWebsiteIconName = 'favicon';
