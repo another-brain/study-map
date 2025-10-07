@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-const { errType, message, detail } = defineProps<{
+defineProps<{
   errType: string;
   message: string;
   detail: string;

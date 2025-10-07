@@ -17,7 +17,10 @@
 <script lang="ts" setup>
 import { defaultWebsiteIconName, imgFileFormats } from '~/consts/routes';
 
-const { url, origin } = defineProps<{ url: string; origin: string }>();
+const { url, origin } = defineProps<{
+  url: string;
+  origin: string;
+}>();
 const candidates = computed(() =>
   [url, useImage(url)].concat(
     imgFileFormats.map(format => `${origin}/${defaultWebsiteIconName}.${format}`)

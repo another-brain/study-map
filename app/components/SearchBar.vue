@@ -69,8 +69,10 @@ const modeIcons = ['mdi-magnify', 'mdi-lightbulb-on'];
 const icon = computed(() => modeIcons[mode.value]);
 
 const text = ref('');
-defineExpose({ text: readonly(text) });
-const { loading, items, loadingItems } = defineProps<{
+defineExpose({
+  text: readonly(text)
+});
+defineProps<{
   loading: boolean;
   loadingItems: boolean;
   items: string[];

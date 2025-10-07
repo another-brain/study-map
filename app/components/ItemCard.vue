@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-const { id, title, text, icon, source } = defineProps<{
+const { id } = defineProps<{
   id: number;
   title: string;
   text: string;

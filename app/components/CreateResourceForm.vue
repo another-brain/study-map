@@ -115,7 +115,9 @@ import { fields } from '~~/server/models/api/utils';
 
 const dialog = ref(false);
 const form = ref<{ reset: () => void }>();
-const { title } = defineProps<{ title: string }>();
+defineProps<{
+  title: string;
+}>();
 function handleClose() {
   dialog.value = false;
   form.value?.reset();
