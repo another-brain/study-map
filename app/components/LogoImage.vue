@@ -18,11 +18,13 @@
 import { defaultWebsiteIconName, imgFileFormats } from '~/consts/routes';
 
 const { url, origin } = defineProps<{ url: string; origin: string }>();
-const candidates = [url, useImage(url)].concat(
-  imgFileFormats.map(format => `${origin}/${defaultWebsiteIconName}.${format}`)
+const candidates = computed(() =>
+  [url, useImage(url)].concat(
+    imgFileFormats.map(format => `${origin}/${defaultWebsiteIconName}.${format}`)
+  )
 );
 const reloadCount = ref(0);
-const src = computed(() => candidates[reloadCount.value]);
+const src = computed(() => candidates.value[reloadCount.value]);
 const srcDisplay = computed(() => {
   if (!src.value) {
     return '';
@@ -35,7 +37,7 @@ const srcDisplay = computed(() => {
   return url.toString();
 });
 function handleError() {
-  if (reloadCount.value < candidates.length) {
+  if (reloadCount.value < candidates.value.length) {
     reloadCount.value++;
   }
 }
