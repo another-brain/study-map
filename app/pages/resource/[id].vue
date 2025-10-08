@@ -1,7 +1,7 @@
 <template>
-  <v-skeleton-loader :loading="pending" type="card">
+  <v-skeleton-loader :loading="pending" type="card" class="h-full">
     <DetailBanner
-      v-if="status === 'success'"
+      v-if="success"
       :name="data!.name"
       :link-text="data!.source.name"
       :link-target="`${PageRoutes.SourceManagement}/${data!.sourceId}`"
@@ -41,6 +41,7 @@
         </v-row>
       </template>
     </DetailBanner>
+    <iframe v-if="success" :src="data!.url" class="h-full w-full" />
     <PageError
       v-else
       err-type="Loading Error"
@@ -57,6 +58,7 @@ import resource from '~/services/resource';
 const route = useRoute();
 const id = Number(route.params.id);
 const { data, status, error, pending, refresh } = useGetResource(id);
+const success = computed(() => status.value === 'success');
 useNoticeError(error);
 
 const { send } = useMessageStore();
@@ -102,14 +104,14 @@ async function change() {
       content: result.message,
       type: MessageType.Error
     });
-    return false
+    return false;
   } else {
     send({
       content: `Update Resource ${id} success`,
       type: MessageType.Success
     });
     refresh();
-    return true
+    return true;
   }
 }
 </script>
