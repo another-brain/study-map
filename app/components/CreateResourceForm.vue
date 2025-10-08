@@ -99,6 +99,7 @@
             text="Submit"
             :loading="loading"
             size="large"
+            :disabled="recognizing || recognizingSource"
           />
         </v-form>
       </template>
