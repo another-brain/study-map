@@ -7,7 +7,11 @@
       <slot name="logo" />
     </template>
     <template #subtitle>
-      <nuxt-link :to="linkTarget" class="text-wrap">{{ linkText ?? linkTarget }}</nuxt-link>
+      <v-chip color="primary" variant="flat" prepend-icon="mdi-link-variant">
+        <nuxt-link :to="linkTarget" class="text-wrap">
+          {{ linkText ?? linkTarget }}
+        </nuxt-link>
+      </v-chip>
     </template>
     <template #text>
       {{ description }}
