@@ -13,7 +13,9 @@ export default defineEventHandler(async event => {
             where: (source, { eq }) => eq(source.url, data.url)
         });
         setResponseStatus(event, StatusCodes.OK);
-        return { id: result ? result.id : 0 };
+        return result
+            ? (extractObj(result, ['id', 'name']) as { id: number; name: string })
+            : { id: 0, name: '' };
     } catch (err) {
         throw buildErrorResponse(StatusCodes.INTERNAL_SERVER_ERROR, err as Error);
     }

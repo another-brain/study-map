@@ -72,10 +72,10 @@ async function handleSave() {
     });
   } else {
     send({
-      content: `Save Source ${result.id} success`,
+      content: `Create Source ${result.id} success`,
       type: MessageType.Success
     });
-    emit('save', result.id);
+    emit('save', result.id, name.value);
     handleCancel();
   }
 }

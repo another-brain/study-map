@@ -199,6 +199,7 @@ async function handleRecognizeSource() {
       return;
     }
     if (record.id !== 0) {
+      text.value = record.name;
       sourceId.value = record.id;
       return;
     }
@@ -218,8 +219,9 @@ async function handleRecognizeSource() {
   recognizingSource.value = false;
 }
 
-async function handleSave(id: number) {
+async function handleSave(id: number, name: string) {
   await refresh();
+  text.value = name;
   sourceId.value = id;
 }
 
