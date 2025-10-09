@@ -7,7 +7,7 @@
       <slot name="logo" />
     </template>
     <template #subtitle>
-      <v-chip color="primary" variant="flat" prepend-icon="mdi-link-variant">
+      <v-chip color="primary" variant="flat" prepend-icon="mdi-link-variant" class="h-auto py-1">
         <nuxt-link :to="linkTarget" class="text-wrap">
           {{ linkText ?? linkTarget }}
         </nuxt-link>
