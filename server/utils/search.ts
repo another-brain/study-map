@@ -22,6 +22,18 @@ class SearchIndex {
             preset: 'score'
         });
         this.titles = new Map();
+        this.init();
+    }
+    private async init() {
+        const db = useDB();
+        const result = await db.query.resource.findMany({
+            columns: {
+                id: true,
+                name: true,
+                description: true
+            }
+        });
+        result.forEach(({ id, name, description }) => this.add(id, name, [name, description]));
     }
     public async add(id: number, title: string, contents: string[]) {
         try {
