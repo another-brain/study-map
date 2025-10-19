@@ -15,7 +15,7 @@ export const url = z.preprocess(val => {
     }
     return val.slice(i, j + 1);
 }, z.url().max(500));
-const description = z.string().optional();
+const description = z.string();
 
 export const fields = {
     name,

@@ -13,7 +13,12 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-textarea v-model="description" label="Description" />
+            <v-textarea
+              v-model="description"
+              label="Description"
+              required
+              :rules="[requiredRule]"
+            />
           </v-col>
         </v-row>
       </template>

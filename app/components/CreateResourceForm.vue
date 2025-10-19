@@ -89,7 +89,13 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-textarea v-model="description" label="Description" :disabled="recognizing" />
+              <v-textarea
+                v-model="description"
+                label="Description"
+                required
+                :disabled="recognizing"
+                :rules="[requiredRule]"
+              />
             </v-col>
           </v-row>
           <v-btn
