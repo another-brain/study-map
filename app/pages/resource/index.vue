@@ -29,11 +29,11 @@
 </template>
 
 <script lang="ts" setup>
+import type { InfiniteScrollStatus } from '~/types';
+
 const input = ref<{ text: string }>();
 const keyword = computed(() => input.value?.text ?? '');
 const { loading, data, error, isLastPage, page, refresh, fetching } = useListResource(keyword, 20);
-
-type InfiniteScrollStatus = 'ok' | 'empty' | 'loading' | 'error';
 function fetchNextPage({ done }: { done: (status: InfiniteScrollStatus) => void }) {
   if (error) {
     done('error');

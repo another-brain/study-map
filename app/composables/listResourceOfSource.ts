@@ -2,13 +2,13 @@ import { usePagination } from 'alova/client';
 import { initialData } from '~/consts/query';
 import type { ResourceQueryResp } from '~~/server/models/api/resource_management';
 
-export const useListResource = (keyword: Ref<string | undefined>, initialPageSize: number) => {
+export const useListResourceOfSource = (sourceId: number, initialPageSize: number) => {
     return usePagination(
         (page, size) =>
             get('/api/resource', {
                 page,
                 size,
-                keyword: keyword.value
+                sourceId
             }),
         {
             initialData,

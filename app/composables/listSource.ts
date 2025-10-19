@@ -1,4 +1,5 @@
 import { usePagination } from 'alova/client';
+import { initialData } from '~/consts/query';
 import type { SourceFullSchema } from '~~/server/models/api/resource_management';
 
 export const useListSource = (
@@ -15,10 +16,7 @@ export const useListSource = (
                 fields
             }),
         {
-            initialData: {
-                total: 0,
-                data: []
-            },
+            initialData,
             data: resp => (resp as SearchResponse<SourceFullSchema>).data,
             initialPage: 1,
             initialPageSize,
