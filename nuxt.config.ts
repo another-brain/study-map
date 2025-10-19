@@ -11,11 +11,12 @@ export default defineNuxtConfig({
         strict: true
     },
     modules: [
-        '@nuxt/eslint',
-        '@nuxtjs/tailwindcss',
-        '@pinia/nuxt',
-        'vuetify-nuxt-module',
-        '@vite-pwa/nuxt'
+      '@nuxt/eslint',
+      '@nuxtjs/tailwindcss',
+      '@pinia/nuxt',
+      'vuetify-nuxt-module',
+      '@vite-pwa/nuxt',
+      '@vueuse/nuxt'
     ],
     imports: {
         dirs: ['composables/**']
