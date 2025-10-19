@@ -46,7 +46,7 @@
         </v-row>
       </template>
     </DetailBanner>
-    <iframe v-if="success" :src="data!.url" class="h-full w-full" />
+    <ContentFrame v-if="success" :src="data!.url" />
     <PageError
       v-else
       err-type="Loading Error"
