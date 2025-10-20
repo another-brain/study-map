@@ -18,6 +18,7 @@
     "@vueuse/nuxt": "^13.9.0",
     "alova": "^3.3.4",
     "clsx": "^2.1.1",
+    "d3-force": "^3.0.0",
     "dotenv": "^17.2.1",
     "drizzle-orm": "^0.44.4",
     "eslint": "^9.33.0",
@@ -29,6 +30,7 @@
     "nodejieba": "^3.5.2",
     "nuxt": "^4.0.3",
     "pinia": "^3.0.3",
+    "v-network-graph": "^0.9.21",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1",
     "vuetify-nuxt-module": "^0.18.7",
@@ -37,6 +39,7 @@
   "devDependencies": {
     "@mdi/font": "^7.4.47",
     "@mdi/js": "^7.4.47",
+    "@types/d3-force": "^3.0.10",
     "drizzle-kit": "^0.31.4",
     "tsx": "^4.20.4",
     "vue-tsc": "^3.0.5"

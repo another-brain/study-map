@@ -11,14 +11,15 @@ export default defineNuxtConfig({
         strict: true
     },
     modules: [
-      '@nuxt/eslint',
-      '@nuxtjs/tailwindcss',
-      '@pinia/nuxt',
-      'vuetify-nuxt-module',
-      '@vite-pwa/nuxt',
-      '@vueuse/nuxt'
+        '@nuxt/eslint',
+        '@nuxtjs/tailwindcss',
+        '@pinia/nuxt',
+        'vuetify-nuxt-module',
+        '@vite-pwa/nuxt',
+        '@vueuse/nuxt'
     ],
     imports: {
         dirs: ['composables/**']
-    }
+    },
+    css: ['v-network-graph/lib/style.css']
 });
