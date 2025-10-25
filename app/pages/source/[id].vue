@@ -35,13 +35,7 @@
         </v-row>
       </template>
     </DetailBanner>
-    <v-container
-      v-if="success"
-      class="w-full flex justify-center align-center"
-      :height="graphHeight"
-    >
-      <RelationNetwork :data="graphView" :load="loadMore" />
-    </v-container>
+    <RelationNetwork v-if="success" :height="graphHeight" :data="graphView" :load="loadMore" />
     <PageError
       v-else
       err-type="Loading Error"
@@ -83,10 +77,12 @@ const graphData = computed(() => {
   return nodes;
 });
 const graphView = useBuildGraphData(graphData);
-function loadMore(count: number) {
+async function loadMore(count: number) {
   if (count < nodeCount / 2 && !isLastPage.value && !loading.value && !fetching.value) {
     page.value++;
+    return true;
   }
+  return false;
 }
 useNoticeError(error, resourceError);
 

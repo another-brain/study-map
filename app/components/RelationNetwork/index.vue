@@ -1,39 +1,55 @@
 <template>
-  <v-network-graph
-    ref="graph"
-    v-model:layouts="layouts"
-    :nodes="data.nodes"
-    :edges="data.edges"
-    :configs="configs"
-    :event-handlers="eventHandlers"
-  />
+  <v-container class="w-full flex flex-col justify-center align-center" :height="height">
+    <v-chip color="primary" class="w-full flex justify-center" label>{{ bar }}</v-chip>
+    <v-network-graph
+      ref="graph"
+      v-model:layouts="layouts"
+      :nodes="data.nodes"
+      :edges="data.edges"
+      :configs="configs"
+      :event-handlers="eventHandlers"
+    />
+  </v-container>
 </template>
 
 <script lang="ts" setup>
 import type * as vNG from 'v-network-graph';
 import { createGraphConfig } from './config';
+import { PageRoutes } from '~/consts/routes';
 
 const configs = ref(createGraphConfig());
-const { load } = defineProps<{
+const { data, load } = defineProps<{
+  height: number;
   data: {
     nodes: Record<string, vNG.Node>;
     edges: Record<string, vNG.Edge>;
   };
-  load: (count: number) => void;
+  load: (count: number) => Promise<boolean>;
 }>();
 
 const layouts = ref({ nodes: {} as Record<string, { x: number; y: number }> });
 const viewBox = ref({ top: 0, bottom: 0, left: 0, right: 0 });
 const graph = ref({ getViewBox: () => viewBox.value });
+const bar = ref('');
+const router = useRouter();
 onMounted(() => {
   viewBox.value = graph.value.getViewBox();
 });
-const eventHandlers = {
+const eventHandlers: vNG.EventHandlers = {
   'view:pan': () => {
     viewBox.value = graph.value.getViewBox();
   },
   'view:zoom': () => {
     viewBox.value = graph.value.getViewBox();
+  },
+  'node:click': ({ node }) => {
+    router.push({ path: `${PageRoutes.ResourceManagement}/${node}` });
+  },
+  'node:pointerover': ({ node }) => {
+    bar.value = data.nodes[node]!.name!;
+  },
+  'node:pointerout': () => {
+    bar.value = '';
   }
 };
 const nodeInViewCount = computed(
@@ -47,8 +63,11 @@ const nodeInViewCount = computed(
     ).length
 );
 watch([nodeInViewCount], ([nodeInViewCount]) => {
-  load(nodeInViewCount);
-  configs.value = createGraphConfig();
+  load(nodeInViewCount).then(refresh => {
+    if (refresh) {
+      configs.value = createGraphConfig();
+    }
+  });
 });
 </script>
 
