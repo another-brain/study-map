@@ -1,7 +1,8 @@
 <template>
-  <v-skeleton-loader :loading="pending" type="card">
+  <v-skeleton-loader ref="loader" :loading="pending" type="card" class="h-full flex flex-col">
     <DetailBanner
-      v-if="status === 'success'"
+      v-if="success"
+      ref="banner"
       :name="data!.name"
       :link-target="data!.url"
       :description="data!.description"
@@ -34,6 +35,13 @@
         </v-row>
       </template>
     </DetailBanner>
+    <v-container
+      v-if="success"
+      class="w-full flex justify-center align-center"
+      :height="graphHeight"
+    >
+      <RelationNetwork :data="graphView" :load="loadMore" />
+    </v-container>
     <PageError
       v-else
       err-type="Loading Error"
@@ -49,7 +57,38 @@ import source from '~/services/source';
 const route = useRoute();
 const id = Number(route.params.id);
 const { data, status, error, pending, refresh } = useGetSource(id);
-useNoticeError(error);
+const success = computed(() => status.value === 'success');
+
+const loader = ref<{ $el: { clientHeight: number } }>();
+const banner = ref<{ $el: { clientHeight: number } }>();
+const graphHeight = computed(() =>
+  loader.value && banner.value ? loader.value.$el.clientHeight - banner.value.$el.clientHeight : 500
+);
+
+const nodeCount = 10;
+const {
+  loading,
+  data: resourceData,
+  error: resourceError,
+  isLastPage,
+  page,
+  fetching
+} = useListResourceOfSource(id, nodeCount);
+const graphData = computed(() => {
+  const nodes = new Array<{ id: string; name: string; neighbors: Set<string> }>();
+  for (const item of resourceData.value) {
+    const { id, name } = item;
+    nodes.push({ id: id.toString(), name, neighbors: new Set<string>() });
+  }
+  return nodes;
+});
+const graphView = useBuildGraphData(graphData);
+function loadMore(count: number) {
+  if (count < nodeCount / 2 && !isLastPage.value && !loading.value && !fetching.value) {
+    page.value++;
+  }
+}
+useNoticeError(error, resourceError);
 
 const { send } = useMessageStore();
 const router = useRouter();
