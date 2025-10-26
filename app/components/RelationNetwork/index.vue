@@ -16,12 +16,13 @@
 import type * as vNG from 'v-network-graph';
 import { createGraphConfig } from './config';
 import { PageRoutes } from '~/consts/routes';
+import type { VNGNode } from './utils';
 
 const configs = ref(createGraphConfig());
 const { data, load } = defineProps<{
   height: number;
   data: {
-    nodes: Record<string, vNG.Node>;
+    nodes: Record<string, VNGNode>;
     edges: Record<string, vNG.Edge>;
   };
   load: (count: number) => Promise<boolean>;
@@ -46,7 +47,8 @@ const eventHandlers: vNG.EventHandlers = {
     router.push({ path: `${PageRoutes.ResourceManagement}/${node}` });
   },
   'node:pointerover': ({ node }) => {
-    bar.value = data.nodes[node]!.name!;
+    const { name, url } = data.nodes[node]!;
+    bar.value = `${name} (${url}) `;
   },
   'node:pointerout': () => {
     bar.value = '';
