@@ -29,15 +29,16 @@ const candidates = computed(() =>
 const reloadCount = ref(0);
 const src = computed(() => candidates.value[reloadCount.value]);
 const srcDisplay = computed(() => {
-  if (!src.value) {
+  try {
+    const url = new URL(src.value ?? '');
+    const routes = url.pathname.split('/').filter(part => part !== '');
+    if (routes.length > 0 && isDefaultWebsiteIconName(routes[routes.length - 1]!)) {
+      url.search = '';
+    }
+    return url.toString();
+  } catch {
     return '';
   }
-  const url = new URL(src.value);
-  const routes = url.pathname.split('/').filter(part => part !== '');
-  if (routes.length > 0 && isDefaultWebsiteIconName(routes[routes.length - 1]!)) {
-    url.search = '';
-  }
-  return url.toString();
 });
 function handleError() {
   if (reloadCount.value < candidates.value.length) {
