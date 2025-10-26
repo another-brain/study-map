@@ -8,7 +8,16 @@
       <v-btn v-if="pinned" icon="mdi-pin" @click="unpin" />
       <v-btn v-else icon="mdi-pin-outline" @click="pin" />
     </div>
-    <v-btn v-for="(text, route) in btnTexts" :key="route" :to="route" text>{{ text }}</v-btn>
+    <v-menu open-on-hover open-on-click>
+      <template #activator="{ props }">
+        <v-btn v-bind="props" class="mx-5">Resource</v-btn>
+      </template>
+      <v-list>
+        <v-list-item v-for="(text, route) in btnTexts" :key="route" :to="route">{{
+          text
+        }}</v-list-item>
+      </v-list>
+    </v-menu>
   </v-app-bar>
 </template>
 
@@ -16,7 +25,8 @@
 import { PageRoutes } from '~/consts/routes';
 
 const btnTexts = {
-  [PageRoutes.ResourceManagement]: 'Resource'
+  [PageRoutes.ResourceManagement]: 'Resource',
+  [PageRoutes.SourceManagement]: 'Source'
 };
 
 const { y, arrivedState } = useWindowScroll({
