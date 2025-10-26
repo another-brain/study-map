@@ -1,71 +1,134 @@
 <template>
   <v-dialog v-model="dialog" persistent max-width="600">
-    <v-card title="Detected Source">
-      <template #text>
-        <v-row>
-          <v-col cols="3">
-            <LogoImage ref="logoRef" :url="logo" :origin="url" />
-          </v-col>
-          <v-col cols="12" sm="9">
-            <v-text-field v-model="name" label="Name" required :rules="[requiredRule]" />
-            <v-text-field :model-value="url" label="URL" disabled />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <v-textarea
-              v-model="description"
-              label="Description"
-              required
-              :rules="[requiredRule]"
-            />
-          </v-col>
-        </v-row>
+    <template #activator="{ props: activatorProps }">
+      <v-btn icon="mdi-plus" color="primary" class="m-5" v-bind="activatorProps" size="large" />
+    </template>
+    <v-card>
+      <template #title>
+        <v-chip color="primary" label size="x-large">
+          {{ title }}
+        </v-chip>
       </template>
-      <template #actions>
-        <v-btn variant="plain" text="Cancel" @click="handleCancel" />
-        <v-btn color="primary" text="Save" :loading="loading" @click="handleSave" />
+      <template #append>
+        <v-btn icon="mdi-close" variant="text" @click="handleClose" />
+      </template>
+      <template #text>
+        <v-form ref="form" @submit.prevent="handleSubmit">
+          <v-row>
+            <v-col cols="3">
+              <LogoImage ref="imgRef" :url="logo" :origin="url" />
+            </v-col>
+            <v-col cols="12" sm="9">
+              <v-text-field v-model="name" label="Name" required :rules="[requiredRule]" />
+              <v-text-field v-model="url" label="URL" required :rules="[requiredRule]">
+                <template #append>
+                  <v-tooltip
+                    text="Recognize and auto load name and description"
+                    loaction="bottom end"
+                  >
+                    <template #activator="{ props }">
+                      <v-btn
+                        icon="mdi-magnify"
+                        color="primary"
+                        variant="tonal"
+                        v-bind="props"
+                        :disabled="recognizeDisabled"
+                        :loading="recognizing"
+                        @click="handleRecognize"
+                      />
+                    </template>
+                  </v-tooltip>
+                </template>
+              </v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-textarea
+                v-model="description"
+                label="Description"
+                required
+                :rules="[requiredRule]"
+              />
+            </v-col>
+          </v-row>
+          <v-btn
+            block
+            color="primary"
+            type="submit"
+            text="Submit"
+            :loading="loading"
+            size="large"
+            :disabled="recognizing"
+          />
+        </v-form>
       </template>
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts" setup>
+import proxy from '~/services/proxy';
 import source from '~/services/source';
+import { fields } from '~~/server/models/api/utils';
 
 const dialog = ref(false);
-const name = ref('');
-const url = ref('');
-const logo = ref('');
-const description = ref('');
-
-defineExpose({
-  open: (
-    defaultName: string,
-    defaultURL: string,
-    defaultLogo: string,
-    defaultDescription: string
-  ) => {
-    name.value = defaultName;
-    url.value = defaultURL;
-    logo.value = defaultLogo;
-    description.value = defaultDescription;
-    dialog.value = true;
-  }
-});
-function handleCancel() {
+const form = ref<{ reset: () => void }>();
+defineProps<{
+  title: string;
+}>();
+function handleClose() {
   dialog.value = false;
+  form.value?.reset();
+}
+
+const url = ref('');
+const name = ref('');
+const description = ref('');
+const logo = ref('');
+
+const recognizing = ref(false);
+const recognizeDisabled = computed(() => fields.url.safeParse(url.value).error !== undefined);
+const { send } = useMessageStore();
+async function handleRecognize() {
+  recognizing.value = true;
+  let content: string | undefined;
+  await (async () => {
+    const record = await source.parse(url.value);
+    if (record instanceof Error) {
+      content = record.message;
+      return;
+    }
+    if (record.id !== 0) {
+      content = 'Source already exists';
+      return;
+    }
+    const result = await proxy.parse(url.value);
+    if (result instanceof Error) {
+      content = result.message;
+      return;
+    }
+    name.value = result.title;
+    description.value = result.description;
+    logo.value = result.logo.url;
+  })();
+  if (content !== undefined) {
+    send({
+      content,
+      type: MessageType.Error
+    });
+  }
+  recognizing.value = false;
 }
 
 const loading = ref(false);
 const logoRef = ref<{ getSrc: () => string }>();
-const { send } = useMessageStore();
-const emit = defineEmits(['save']);
-async function handleSave() {
+const emit = defineEmits(['submit']);
+async function handleSubmit() {
   loading.value = true;
   const result = await source.create({
-    name: name.value,
     url: url.value,
+    name: name.value,
     logo: logoRef.value?.getSrc() || logo.value,
     description: description.value
   });
@@ -80,8 +143,8 @@ async function handleSave() {
       content: `Create Source ${result.id} success`,
       type: MessageType.Success
     });
-    emit('save', result.id, name.value);
-    handleCancel();
+    handleClose();
+    emit('submit');
   }
 }
 </script>

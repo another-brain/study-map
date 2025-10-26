@@ -110,7 +110,7 @@
         </v-form>
       </template>
     </v-card>
-    <CreateSourceForm ref="subForm" @save="handleSave" />
+    <SaveSourceForm ref="subForm" @save="handleSave" />
   </v-dialog>
 </template>
 
@@ -196,6 +196,7 @@ const subForm = ref<{
   open: (name: string, url: string, logo: string, description: string) => void;
 }>();
 const sourceURL = computed(() => (recognizeDisabled.value ? '' : new URL(url.value).origin));
+const { send } = useMessageStore();
 async function handleRecognizeSource() {
   recognizingSource.value = true;
   let content: string | undefined;
@@ -233,7 +234,6 @@ async function handleSave(id: number, name: string) {
 }
 
 const loading = ref(false);
-const { send } = useMessageStore();
 const emit = defineEmits(['submit']);
 async function handleSubmit() {
   loading.value = true;
