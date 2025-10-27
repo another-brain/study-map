@@ -1,5 +1,12 @@
 <template>
-  <v-img :src="srcDisplay" min-width="55" class="bg-surface" rounded="lg" @error="handleError">
+  <v-img
+    ref="imgRef"
+    :src="srcDisplay"
+    min-width="55"
+    class="bg-surface"
+    rounded="lg"
+    @error="handleError"
+  >
     <template #placeholder>
       <v-sheet
         height="55"
@@ -19,11 +26,11 @@ import { defaultWebsiteIconName, imgFileFormats } from '~/consts/routes';
 
 const { url, origin } = defineProps<{
   url: string;
-  origin: string;
+  origin: string | null;
 }>();
 const candidates = computed(() =>
-  [url, useImage(url)].concat(
-    imgFileFormats.map(format => `${origin}/${defaultWebsiteIconName}.${format}`)
+  (url ? [url, useImage(url)] : []).concat(
+    origin ? imgFileFormats.map(format => `${origin}/${defaultWebsiteIconName}.${format}`) : []
   )
 );
 const reloadCount = ref(0);
@@ -40,10 +47,17 @@ const srcDisplay = computed(() => {
     return '';
   }
 });
+const imgRef = ref<{ $el: { clientWidth: number; clientHeight: number } }>();
 function handleError() {
   if (reloadCount.value < candidates.value.length) {
     reloadCount.value++;
   }
+  nextTick(() => {
+    const { clientHeight, clientWidth } = imgRef.value!.$el;
+    if (clientHeight * clientWidth === 0 && reloadCount.value < candidates.value.length) {
+      reloadCount.value++;
+    }
+  });
 }
 defineExpose({
   getSrc: () => src.value

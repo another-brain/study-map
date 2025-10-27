@@ -23,6 +23,9 @@ export default defineEventHandler(async event => {
                 new Error(result.message || 'unknown error')
             );
         }
+        if (!result.data.logo) {
+            result.data.logo = { url: '' };
+        }
         // TODO use RAG to optimize [description] with [lang] in [result.data]
         setResponseStatus(event, StatusCodes.OK);
         return extractObj(result.data, ['title', 'description', 'logo']) as WebsiteMetaData;
@@ -34,7 +37,7 @@ export default defineEventHandler(async event => {
 type MicroLinkApiSuccessResp = {
     status: 'success';
     statusCode: StatusCodes;
-    data: WebsiteMetaData;
+    data: Data;
 };
 
 type MicroLinkApiFailureResp = {
@@ -49,8 +52,16 @@ type MicroLinkApiResp = MicroLinkApiSuccessResp | MicroLinkApiFailureResp;
 type WebsiteMetaData = {
     title: string;
     description: string;
-    lang: LanguageCode;
     logo: {
         url: string;
     };
+};
+
+type Data = {
+    title: string;
+    description: string;
+    lang: LanguageCode;
+    logo: {
+        url: string;
+    } | null;
 };

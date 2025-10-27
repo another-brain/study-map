@@ -16,7 +16,7 @@
         <v-form ref="form" @submit.prevent="handleSubmit">
           <v-row>
             <v-col cols="3">
-              <LogoImage ref="imgRef" :url="logo" :origin="url" />
+              <LogoImage ref="logoRef" :url="logo" :origin="url" />
             </v-col>
             <v-col cols="12" sm="9">
               <v-text-field v-model="name" label="Name" required :rules="[requiredRule]" />
