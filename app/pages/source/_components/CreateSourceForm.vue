@@ -5,12 +5,10 @@
     </template>
     <v-card>
       <template #title>
-        <v-chip color="primary" label size="x-large">
-          {{ title }}
-        </v-chip>
+        <v-chip color="primary" label size="x-large">Create Source</v-chip>
       </template>
       <template #append>
-        <v-btn icon="mdi-close" variant="text" @click="handleClose" />
+        <CloseButton @click="handleClose" />
       </template>
       <template #text>
         <v-form ref="form" @submit.prevent="handleSubmit">
@@ -52,15 +50,7 @@
               />
             </v-col>
           </v-row>
-          <v-btn
-            block
-            color="primary"
-            type="submit"
-            text="Submit"
-            :loading="loading"
-            size="large"
-            :disabled="recognizing"
-          />
+          <SubmitButton :loading="loading" :disabled="recognizing" />
         </v-form>
       </template>
     </v-card>
@@ -74,9 +64,6 @@ import { fields } from '~~/server/models/api/utils';
 
 const dialog = ref(false);
 const form = ref<{ reset: () => void }>();
-defineProps<{
-  title: string;
-}>();
 function handleClose() {
   dialog.value = false;
   form.value?.reset();

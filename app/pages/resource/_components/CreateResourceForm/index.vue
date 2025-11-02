@@ -5,12 +5,10 @@
     </template>
     <v-card>
       <template #title>
-        <v-chip color="primary" label size="x-large">
-          {{ title }}
-        </v-chip>
+        <v-chip color="primary" label size="x-large">Create Resource</v-chip>
       </template>
       <template #append>
-        <v-btn icon="mdi-close" variant="text" @click="handleClose" />
+        <CloseButton @click="handleClose" />
       </template>
       <template #text>
         <v-form ref="form" @submit.prevent="handleSubmit">
@@ -98,15 +96,7 @@
               />
             </v-col>
           </v-row>
-          <v-btn
-            block
-            color="primary"
-            type="submit"
-            text="Submit"
-            :loading="loading"
-            size="large"
-            :disabled="recognizing || recognizingSource"
-          />
+          <SubmitButton :loading="loading" :disabled="recognizing || recognizingSource" />
         </v-form>
       </template>
     </v-card>
@@ -119,12 +109,11 @@ import proxy from '~/services/proxy';
 import resource from '~/services/resource';
 import source from '~/services/source';
 import { fields } from '~~/server/models/api/utils';
+import SaveSourceForm from './SaveSourceForm.vue';
 
 const dialog = ref(false);
 const form = ref<{ reset: () => void }>();
-defineProps<{
-  title: string;
-}>();
+
 function handleClose() {
   dialog.value = false;
   form.value?.reset();

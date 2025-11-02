@@ -23,13 +23,14 @@
       <template #loading />
     </v-infinite-scroll>
     <v-row class="flex justify-end">
-      <CreateResourceForm title="Create Resource" @submit="refresh" />
+      <CreateResourceForm @submit="refresh" />
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts" setup>
 import type { InfiniteScrollStatus } from '~/types';
+import CreateResourceForm from './_components/CreateResourceForm/index.vue';
 
 const input = ref<{ text: string }>();
 const keyword = computed(() => input.value?.text ?? '');

@@ -17,18 +17,10 @@
       {{ description }}
     </template>
     <template v-if="xs" #actions>
-      <ActionButtons :object-type="objectType" :name="name" :change="change" :remove="remove">
-        <template #form>
-          <slot name="edit" />
-        </template>
-      </ActionButtons>
+      <slot name="actions" />
     </template>
     <template v-else #append>
-      <ActionButtons :object-type="objectType" :name="name" :change="change" :remove="remove">
-        <template #form>
-          <slot name="edit" />
-        </template>
-      </ActionButtons>
+      <slot name="actions" />
     </template>
   </v-card>
 </template>
@@ -39,9 +31,6 @@ defineProps<{
   linkText?: string;
   linkTarget: string;
   description: string;
-  objectType: string;
-  change: () => Promise<boolean>;
-  remove: () => Promise<boolean>;
 }>();
 const { xs } = useDisplay();
 </script>

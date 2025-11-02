@@ -8,5 +8,7 @@
   </v-app>
 </template>
 <script setup lang="ts">
+import NavBar from './_components/NavBar.vue';
+
 const messages = useMessageStore();
 </script>

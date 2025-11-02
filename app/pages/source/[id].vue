@@ -6,33 +6,17 @@
       :name="data!.name"
       :link-target="data!.url"
       :description="data!.description"
-      object-type="Source"
-      :change="change"
-      :remove="remove"
     >
       <template #logo>
         <LogoImage :url="data!.logo" :origin="data!.url" />
       </template>
-      <template #edit>
-        <v-row>
-          <v-col cols="3">
-            <LogoImage :url="data!.logo" :origin="data!.url" />
-          </v-col>
-          <v-col cols="12" sm="9">
-            <v-text-field v-model="name" label="Name" required :rules="[requiredRule]" />
-            <v-text-field :model-value="data!.url" label="URL" disabled />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <v-textarea
-              v-model="description"
-              label="Description"
-              required
-              :rules="[requiredRule]"
-            />
-          </v-col>
-        </v-row>
+      <template #actions>
+        <EditForm object-type="Source" :work="change">
+          <template #form>
+            <EditSourceFormContent :id="id" />
+          </template>
+        </EditForm>
+        <DeleteDialog object-type="Source" :name="data!.name" :work="remove" />
       </template>
     </DetailBanner>
     <RelationNetwork v-if="success" :height="graphHeight" :data="graphView" :load="loadMore" />
@@ -48,7 +32,8 @@
 <script lang="ts" setup>
 import { buildGraphData, type GraphNode } from '~/components/RelationNetwork/utils';
 import source from '~/services/source';
-
+import EditSourceFormContent from './_components/EditSourceFormContent.vue';
+import { PageRoutes } from '~/consts/routes';
 const route = useRoute();
 const id = Number(route.params.id);
 const { data, status, error, pending, refresh } = useGetSource(id);
@@ -151,7 +136,7 @@ async function remove() {
       content: `Delete Source ${id} success`,
       type: MessageType.Success
     });
-    router.push('/source');
+    router.push(PageRoutes.SourceManagement);
     return true;
   }
 }
@@ -165,6 +150,8 @@ const unwatch = watch([data], ([data]) => {
     unwatch();
   }
 });
+provide('description', description);
+provide('name', name);
 async function change() {
   const result = await source.update(id, {
     name: name.value,
