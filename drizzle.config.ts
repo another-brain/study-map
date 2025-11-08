@@ -12,7 +12,7 @@ export default defineConfig({
         password: process.env.TIDB_PASSWORD!,
         database: process.env.TIDB_DATABASE!,
         ssl: {
-            rejectUnauthorized: false
+            rejectUnauthorized: process.env.NODE_ENV !== 'development'
         }
     }
 });

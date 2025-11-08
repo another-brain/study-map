@@ -7,7 +7,10 @@ const connection = createConnection({
     port: Number(process.env.TIDB_PORT!),
     user: process.env.TIDB_USER!,
     password: process.env.TIDB_PASSWORD!,
-    database: process.env.TIDB_DATABASE!
+    database: process.env.TIDB_DATABASE!,
+    ssl: {
+        rejectUnauthorized: process.env.NODE_ENV !== 'development'
+    }
 });
 
 const client = drizzle(connection, { schema, mode: 'default' });
