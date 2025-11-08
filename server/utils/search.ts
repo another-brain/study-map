@@ -1,6 +1,6 @@
 import { type DefaultSearchResults, Index } from 'flexsearch';
 import jieba from 'nodejieba';
-import { WordTokenizer } from 'natural/lib/natural/tokenizers';
+import { WordTokenizer } from 'natural/lib/natural/tokenizers/index.js';
 import { TableName } from '../consts/db';
 import { consola } from 'consola';
 
