@@ -3,11 +3,11 @@ import * as schema from '../models/orm/resource_management';
 import { createConnection } from 'mysql2';
 
 const connection = createConnection({
-    host: process.env.TIDB_HOST!,
-    port: Number(process.env.TIDB_PORT!),
-    user: process.env.TIDB_USER!,
-    password: process.env.TIDB_PASSWORD!,
-    database: process.env.TIDB_DATABASE!,
+    host: process.env.DB_HOST!,
+    port: Number(process.env.DB_PORT!),
+    user: process.env.DB_USER!,
+    password: process.env.DB_PASSWORD!,
+    database: process.env.DB_DATABASE!,
     ssl: {
         rejectUnauthorized: process.env.NODE_ENV !== 'development'
     }
